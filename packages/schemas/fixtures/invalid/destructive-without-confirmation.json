@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "invalid-demo",
+    "title": "Invalid Demo",
+    "description": "Unsafe destructive tool.",
+    "language": "en"
+  },
+  "server": {
+    "name": "invalid-demo",
+    "version": "1.0.0",
+    "description": "Invalid fixture.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": { "tools": true, "resources": false, "prompts": false }
+  },
+  "tools": [
+    {
+      "name": "delete_record",
+      "title": "Delete record",
+      "description": "Deletes a record.",
+      "inputSchema": {},
+      "useWhen": "Deletion is explicitly requested.",
+      "avoidWhen": "Confirmation is absent.",
+      "riskLevel": "critical",
+      "readOnly": false,
+      "destructive": true,
+      "requiresConfirmation": false
+    }
+  ],
+  "distribution": { "type": "local-entrypoint", "entrypoint": "dist/index.js" }
+}

@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "metadata-server": {
+      "command": "metadata-mcp",
+      "args": [],
+      "labels": {
+        "category": "fictional"
+      },
+      "credentials": {
+        "PRIVATE_KEY": "private-value-must-never-survive"
+      }
+    }
+  }
+}

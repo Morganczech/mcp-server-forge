@@ -1,0 +1,5 @@
+dist
+coverage
+packages/templates/templates/**/*.hbs
+node_modules
+pnpm-lock.yaml

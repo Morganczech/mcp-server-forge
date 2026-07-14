@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "first": {
+      "command": "first-mcp"
+    }
+  },
+  "servers": {
+    "second": {
+      "command": "second-mcp"
+    }
+  }
+}

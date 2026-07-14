@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "acme-knowledge",
+    "title": "Acme Knowledge",
+    "description": "A fictional company knowledge server.",
+    "language": "en",
+    "license": "MIT"
+  },
+  "server": {
+    "name": "acme-knowledge",
+    "version": "1.0.0",
+    "description": "Answers questions from reviewed fictional documents.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": true,
+      "resources": true,
+      "prompts": true
+    }
+  },
+  "tools": [
+    {
+      "name": "search_company_docs",
+      "title": "Search company documents",
+      "description": "Searches approved fictional company documents.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string" }
+        },
+        "required": ["query"]
+      },
+      "useWhen": "The user asks about documented company information.",
+      "avoidWhen": "The request requires private or unreviewed information.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false
+    }
+  ],
+  "resources": [
+    {
+      "name": "company_handbook",
+      "title": "Company handbook",
+      "description": "The approved fictional company handbook.",
+      "uri": "forge://knowledge/company-handbook",
+      "mimeType": "text/markdown",
+      "source": "handbook"
+    }
+  ],
+  "resourceTemplates": [
+    {
+      "name": "department_page",
+      "title": "Department page",
+      "description": "A fictional department knowledge page.",
+      "uriTemplate": "forge://knowledge/departments/{department}",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "answer_from_handbook",
+      "title": "Answer from handbook",
+      "description": "Answers using only the approved handbook.",
+      "arguments": [
+        {
+          "name": "question",
+          "description": "The question to answer.",
+          "required": true
+        }
+      ],
+      "templatePath": "prompts/answer-from-handbook.md"
+    }
+  ],
+  "knowledge": {
+    "enabled": true,
+    "dataDirectory": "knowledge",
+    "manifest": "knowledge/manifest.json",
+    "publicDirectory": "knowledge/public",
+    "privateDirectory": "knowledge/private",
+    "sourceDocumentsDirectory": "knowledge/sources",
+    "generatedDocumentsDirectory": "knowledge/generated",
+    "index": "knowledge/index.json",
+    "sources": [
+      {
+        "id": "handbook",
+        "type": "markdown",
+        "path": "knowledge/sources/handbook.md",
+        "title": "Fictional company handbook",
+        "language": "en",
+        "reviewStatus": "approved",
+        "private": false,
+        "updatedAt": "2026-07-01T09:00:00Z"
+      },
+      {
+        "id": "public_site",
+        "type": "web",
+        "url": "https://example.com/company",
+        "title": "Fictional public website",
+        "reviewStatus": "needs-review",
+        "private": false
+      }
+    ]
+  },
+  "documentation": {
+    "language": "en",
+    "outputs": {
+      "readme": true,
+      "shortSystemPrompt": true,
+      "fullSystemPrompt": true,
+      "agents": true,
+      "queryExamples": true,
+      "clientConfigurations": false
+    }
+  },
+  "distribution": {
+    "type": "local-entrypoint",
+    "entrypoint": "dist/index.js"
+  },
+  "security": {
+    "allowedRootDirectories": ["knowledge"],
+    "networkAccess": "restricted",
+    "shellAccess": false,
+    "fileWrite": false,
+    "fileDelete": false,
+    "requireConfirmation": true,
+    "maxResponseBytes": 1048576,
+    "timeoutMs": 30000
+  }
+}

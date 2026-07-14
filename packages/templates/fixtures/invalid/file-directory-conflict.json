@@ -1,0 +1,23 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "path-conflict",
+    "version": "1.0.0",
+    "title": "Path conflict",
+    "description": "File directory conflict fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "src",
+      "source": "files/src",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true
+    }
+  ],
+  "directories": [{ "path": "src/generated", "required": true }]
+}

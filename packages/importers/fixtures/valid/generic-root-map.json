@@ -1,0 +1,6 @@
+{
+  "search-server": {
+    "command": "search-mcp",
+    "args": ["--mode", "readonly"]
+  }
+}

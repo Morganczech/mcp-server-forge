@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "public-catalog",
+    "title": "Public Catalog",
+    "description": "A fictional public catalog server distributed through npm.",
+    "language": "en",
+    "homepage": "https://example.com/public-catalog",
+    "repository": "https://github.com/example/public-catalog"
+  },
+  "server": {
+    "name": "public-catalog",
+    "version": "2.3.1",
+    "description": "Reads entries from a fictional public catalog.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": false,
+      "resources": true,
+      "prompts": false
+    }
+  },
+  "resources": [
+    {
+      "name": "catalog",
+      "title": "Public catalog",
+      "description": "A fictional public catalog.",
+      "uri": "catalog://entries",
+      "mimeType": "application/json"
+    }
+  ],
+  "clients": {
+    "codex": {
+      "enabled": true,
+      "serverName": "public-catalog",
+      "updateMode": "preview"
+    }
+  },
+  "distribution": {
+    "type": "npm-package",
+    "packageName": "@example/public-catalog-mcp",
+    "version": "2.3.1",
+    "packageManager": "pnpm",
+    "args": ["--stdio"]
+  },
+  "environment": [
+    {
+      "name": "CATALOG_API_KEY",
+      "description": "API key supplied at runtime.",
+      "required": true,
+      "secret": true,
+      "externalSource": {
+        "type": "environment-variable",
+        "name": "CATALOG_API_KEY"
+      }
+    }
+  ],
+  "registry": {
+    "publicRegistryId": "io.example/public-catalog",
+    "publisher": "Example Publisher",
+    "sourceRepository": "https://github.com/example/public-catalog",
+    "trustStatus": "unverified",
+    "categories": ["reference", "catalog"],
+    "lastSyncedAt": "2026-07-10T12:30:00Z"
+  }
+}

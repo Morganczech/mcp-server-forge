@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "example-server",
+    "title": "Example *Server*",
+    "description": "A fictional renderer fixture.",
+    "language": "en",
+    "license": "MIT"
+  },
+  "server": {
+    "name": "example-server",
+    "version": "0.1.0",
+    "description": "provide a safe fictional MCP placeholder",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": false,
+      "resources": false,
+      "prompts": false
+    }
+  },
+  "distribution": {
+    "type": "local-entrypoint",
+    "entrypoint": "dist/index.js"
+  },
+  "environment": [
+    {
+      "name": "EXAMPLE_TOKEN",
+      "description": "A secret supplied only at runtime.",
+      "required": true,
+      "secret": true,
+      "externalSource": {
+        "type": "environment-variable",
+        "name": "FORGE_TEST_SECRET_VALUE"
+      }
+    }
+  ]
+}

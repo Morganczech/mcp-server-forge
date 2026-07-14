@@ -1,0 +1,22 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "bad-path",
+    "version": "1.0.0",
+    "title": "Bad path",
+    "description": "Traversal fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "../README.md",
+      "source": "files/readme",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true
+    }
+  ]
+}

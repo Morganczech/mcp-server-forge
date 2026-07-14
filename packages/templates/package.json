@@ -1,0 +1,12 @@
+{
+  "name": "@mcp-server-forge/templates",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "@mcp-server-forge/validators": "workspace:*"
+  }
+}

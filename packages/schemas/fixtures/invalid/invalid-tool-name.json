@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "invalid-demo",
+    "title": "Invalid Demo",
+    "description": "Invalid tool name.",
+    "language": "en"
+  },
+  "server": {
+    "name": "invalid-demo",
+    "version": "1.0.0",
+    "description": "Invalid fixture.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": { "tools": true, "resources": false, "prompts": false }
+  },
+  "tools": [
+    {
+      "name": "Invalid Tool",
+      "title": "Invalid tool",
+      "description": "Invalid name.",
+      "inputSchema": {},
+      "useWhen": "Never.",
+      "avoidWhen": "Always.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false
+    }
+  ],
+  "distribution": { "type": "local-entrypoint", "entrypoint": "dist/index.js" }
+}

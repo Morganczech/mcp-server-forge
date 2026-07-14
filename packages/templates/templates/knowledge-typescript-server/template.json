@@ -1,0 +1,72 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "knowledge-typescript-server",
+    "version": "1.0.0",
+    "title": "Knowledge TypeScript MCP server",
+    "description": "Template contract for a TypeScript MCP knowledge server.",
+    "kind": "knowledge-server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": {
+    "forgeConfigSchema": ["1"],
+    "minimumForgeVersion": "0.1.0"
+  },
+  "files": [
+    {
+      "path": "package.json",
+      "source": "files/package.json.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "application/json"
+    },
+    {
+      "path": "src/index.ts",
+      "source": "files/src/index.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "data/manifest.json",
+      "source": "files/data/manifest.json.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "application/json",
+      "condition": { "field": "knowledge.enabled", "equals": true }
+    },
+    {
+      "path": "data/public/.gitkeep",
+      "source": "files/data/public/.gitkeep.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/plain",
+      "condition": { "field": "knowledge.enabled", "equals": true }
+    },
+    {
+      "path": "README.md",
+      "source": "files/README.md.hbs",
+      "ownership": "shared",
+      "updateStrategy": "merge-markers",
+      "required": true,
+      "contentType": "text/markdown"
+    },
+    {
+      "path": "SYSTEM_PROMPT.md",
+      "source": "files/SYSTEM_PROMPT.md.hbs",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": false,
+      "contentType": "text/markdown"
+    }
+  ],
+  "directories": [
+    { "path": "data", "required": true },
+    { "path": "src", "required": true }
+  ]
+}

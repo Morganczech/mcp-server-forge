@@ -1,0 +1,18 @@
+{
+  "project": {
+    "name": "invalid-demo",
+    "title": "Invalid Demo",
+    "description": "Missing schema version.",
+    "language": "en"
+  },
+  "server": {
+    "name": "invalid-demo",
+    "version": "1.0.0",
+    "description": "Invalid fixture.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": { "tools": false, "resources": false, "prompts": false }
+  },
+  "distribution": { "type": "local-entrypoint", "entrypoint": "dist/index.js" }
+}

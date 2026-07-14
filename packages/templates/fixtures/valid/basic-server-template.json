@@ -1,0 +1,30 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "basic-typescript-server",
+    "version": "1.0.0",
+    "title": "Basic server",
+    "description": "A valid server template fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "src/index.ts",
+      "source": "files/src/index.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "source": "files/README.md.hbs",
+      "ownership": "shared",
+      "updateStrategy": "merge-markers",
+      "required": true
+    }
+  ],
+  "directories": [{ "path": "src", "required": true }]
+}

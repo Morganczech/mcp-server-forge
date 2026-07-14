@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "machine-specific": {
+      "command": "/opt/example/bin/node",
+      "args": ["/opt/example/servers/machine-specific.js"],
+      "cwd": "/opt/example/servers"
+    }
+  }
+}

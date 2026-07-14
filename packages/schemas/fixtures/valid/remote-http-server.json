@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "remote-weather",
+    "title": "Remote Weather",
+    "description": "A fictional remote weather MCP service.",
+    "language": "en"
+  },
+  "server": {
+    "name": "remote-weather",
+    "version": "1.4.0",
+    "description": "Provides fictional weather observations over HTTP.",
+    "runtime": "node",
+    "transport": "streamable-http",
+    "entrypoint": "dist/http.js",
+    "capabilities": {
+      "tools": true,
+      "resources": false,
+      "prompts": false
+    }
+  },
+  "tools": [
+    {
+      "name": "get_weather",
+      "title": "Get weather",
+      "description": "Returns a fictional weather observation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "location": { "type": "string" }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "temperature": { "type": "number" }
+        }
+      },
+      "useWhen": "A current fictional observation is requested.",
+      "avoidWhen": "A forecast or safety-critical alert is requested.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false
+    }
+  ],
+  "distribution": {
+    "type": "remote-http",
+    "url": "https://mcp.example.com/weather"
+  },
+  "security": {
+    "networkAccess": "restricted"
+  }
+}

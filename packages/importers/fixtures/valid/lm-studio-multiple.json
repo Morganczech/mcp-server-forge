@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "zeta-server": {
+      "command": "zeta-mcp",
+      "args": []
+    },
+    "alpha-server": {
+      "command": "alpha-mcp",
+      "args": ["--stdio"]
+    }
+  }
+}

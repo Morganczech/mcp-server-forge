@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "catalog-server": {
+      "command": "node",
+      "args": ["catalog-server.mjs"],
+      "env": {}
+    }
+  }
+}

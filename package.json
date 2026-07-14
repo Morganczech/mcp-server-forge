@@ -1,0 +1,31 @@
+{
+  "name": "mcp-server-forge",
+  "version": "0.0.0",
+  "private": true,
+  "description": "CLI and MCP server toolkit for designing, generating, validating, and documenting standard MCP servers.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -b packages/schemas/tsconfig.build.json packages/validators/tsconfig.build.json packages/importers/tsconfig.build.json packages/templates/tsconfig.build.json packages/generators/tsconfig.build.json apps/cli/tsconfig.build.json",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@types/node": "^22.16.4",
+    "eslint": "^9.31.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.37.0",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "invalid-demo",
+    "title": "Invalid Demo",
+    "description": "Invalid client mode.",
+    "language": "en"
+  },
+  "server": {
+    "name": "invalid-demo",
+    "version": "1.0.0",
+    "description": "Invalid fixture.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": { "tools": false, "resources": false, "prompts": false }
+  },
+  "clients": {
+    "codex": { "enabled": true, "updateMode": "overwrite-everything" }
+  },
+  "distribution": { "type": "local-entrypoint", "entrypoint": "dist/index.js" }
+}

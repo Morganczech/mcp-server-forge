@@ -1,0 +1,22 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "unsafe-user",
+    "version": "1.0.0",
+    "title": "Unsafe user",
+    "description": "Unsafe ownership fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "README.md",
+      "source": "files/readme",
+      "ownership": "user-owned",
+      "updateStrategy": "replace",
+      "required": true
+    }
+  ]
+}

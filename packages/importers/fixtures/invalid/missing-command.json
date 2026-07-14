@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "missing-command": {
+      "args": ["server.js"]
+    }
+  }
+}

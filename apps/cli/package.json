@@ -1,0 +1,19 @@
+{
+  "name": "@mcp-server-forge/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mcp-forge": "dist/index.js"
+  },
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@mcp-server-forge/validators": "workspace:*"
+  }
+}

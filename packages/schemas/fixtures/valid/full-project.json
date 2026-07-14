@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "forge-demo",
+    "title": "Forge Demo",
+    "description": "A complete fictional configuration demonstrating version 1.",
+    "language": "en",
+    "license": "MIT",
+    "homepage": "https://example.com/forge-demo",
+    "repository": "https://github.com/example/forge-demo"
+  },
+  "server": {
+    "name": "forge-demo",
+    "version": "1.0.0-beta.1",
+    "description": "Demonstrates all version 1 configuration areas.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": true,
+      "resources": true,
+      "prompts": true
+    }
+  },
+  "tools": [
+    {
+      "name": "archive_record",
+      "title": "Archive record",
+      "description": "Archives a fictional record after confirmation.",
+      "inputSchema": { "type": "object" },
+      "outputSchema": { "type": "object" },
+      "useWhen": "A user explicitly asks to archive a record.",
+      "avoidWhen": "The user only asks to inspect a record.",
+      "riskLevel": "high",
+      "readOnly": false,
+      "destructive": true,
+      "requiresConfirmation": true
+    }
+  ],
+  "resources": [
+    {
+      "name": "records",
+      "title": "Records",
+      "description": "Fictional records.",
+      "uri": "demo://records",
+      "mimeType": "application/json"
+    }
+  ],
+  "resourceTemplates": [
+    {
+      "name": "record_detail",
+      "title": "Record detail",
+      "description": "A fictional record selected by ID.",
+      "uriTemplate": "demo://records/{id}",
+      "mimeType": "application/json"
+    }
+  ],
+  "prompts": [
+    {
+      "name": "summarize_record",
+      "title": "Summarize record",
+      "description": "Summarizes a fictional record.",
+      "arguments": [
+        {
+          "name": "record_id",
+          "description": "Fictional record identifier.",
+          "required": true
+        }
+      ],
+      "templatePath": "prompts/summarize-record.md"
+    }
+  ],
+  "knowledge": {
+    "enabled": true,
+    "sources": [
+      {
+        "id": "record_guide",
+        "type": "pdf",
+        "path": "knowledge/sources/record-guide.pdf",
+        "title": "Fictional record guide",
+        "language": "en",
+        "reviewStatus": "approved",
+        "private": true,
+        "updatedAt": "2026-06-15T10:00:00+02:00"
+      }
+    ]
+  },
+  "documentation": {
+    "language": "en",
+    "outputs": {
+      "readme": true,
+      "shortSystemPrompt": true,
+      "fullSystemPrompt": true,
+      "agents": true,
+      "queryExamples": true,
+      "clientConfigurations": true
+    }
+  },
+  "clients": {
+    "lm-studio": { "enabled": true, "updateMode": "preview" },
+    "claude-desktop": { "enabled": false, "updateMode": "preview" },
+    "cursor": { "enabled": false, "updateMode": "preview" },
+    "codex": { "enabled": true, "updateMode": "preview" },
+    "continue": { "enabled": false, "updateMode": "preview" },
+    "generic-json": {
+      "enabled": true,
+      "configPath": "config/client.json",
+      "serverName": "forge-demo",
+      "updateMode": "merge"
+    }
+  },
+  "distribution": {
+    "type": "custom-command",
+    "command": "node",
+    "args": ["dist/index.js"]
+  },
+  "environment": [
+    {
+      "name": "LOG_LEVEL",
+      "description": "Public runtime log level.",
+      "required": false,
+      "secret": false,
+      "default": "info"
+    },
+    {
+      "name": "DEMO_TOKEN",
+      "description": "Secret token resolved outside the forge file.",
+      "required": true,
+      "secret": true,
+      "externalSource": {
+        "type": "secret-manager",
+        "reference": "demo/runtime-token"
+      }
+    }
+  ],
+  "security": {
+    "allowedRootDirectories": ["knowledge", "output"],
+    "networkAccess": "restricted",
+    "shellAccess": false,
+    "fileWrite": false,
+    "fileDelete": false,
+    "requireConfirmation": true,
+    "maxResponseBytes": 2097152,
+    "timeoutMs": 45000
+  },
+  "registry": {
+    "publicRegistryId": "io.example/forge-demo",
+    "publisher": "Example Publisher",
+    "sourceRepository": "https://github.com/example/forge-demo",
+    "trustStatus": "verified",
+    "categories": ["demo"],
+    "lastSyncedAt": "2026-07-12T08:00:00Z"
+  }
+}

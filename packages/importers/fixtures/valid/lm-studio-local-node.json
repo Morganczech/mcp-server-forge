@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "fictional-local": {
+      "command": "/opt/example/bin/node",
+      "args": ["/opt/example/mcp/fictional-server.js"],
+      "env": {
+        "DATA_PATH": "/opt/example/data"
+      }
+    }
+  }
+}

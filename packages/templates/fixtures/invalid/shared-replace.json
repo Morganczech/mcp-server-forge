@@ -1,0 +1,22 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "unsafe-shared",
+    "version": "1.0.0",
+    "title": "Unsafe shared",
+    "description": "Unsafe shared fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "README.md",
+      "source": "files/readme",
+      "ownership": "shared",
+      "updateStrategy": "replace",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "browser-tools": {
+      "command": "npx",
+      "args": ["-y", "@example/browser-mcp@1.2.3", "--stdio"],
+      "env": {}
+    }
+  }
+}

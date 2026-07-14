@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "invalid-demo",
+    "title": "Invalid Demo",
+    "description": "Web source with path.",
+    "language": "en"
+  },
+  "server": {
+    "name": "invalid-demo",
+    "version": "1.0.0",
+    "description": "Invalid fixture.",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": { "tools": false, "resources": false, "prompts": false }
+  },
+  "knowledge": {
+    "enabled": true,
+    "sources": [
+      {
+        "id": "bad_web",
+        "type": "web",
+        "path": "knowledge/site.html",
+        "title": "Bad web source"
+      }
+    ]
+  },
+  "distribution": { "type": "local-entrypoint", "entrypoint": "dist/index.js" }
+}

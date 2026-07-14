@@ -1,0 +1,29 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "duplicate-path",
+    "version": "1.0.0",
+    "title": "Duplicate",
+    "description": "Duplicate target fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "README.md",
+      "source": "files/a",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true
+    },
+    {
+      "path": "README.md",
+      "source": "files/b",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true
+    }
+  ]
+}

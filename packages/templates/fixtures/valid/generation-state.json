@@ -1,0 +1,16 @@
+{
+  "stateVersion": "1",
+  "templateId": "basic-typescript-server",
+  "templateVersion": "1.0.0",
+  "hashAlgorithm": "sha256",
+  "generatedAt": "2026-01-01T00:00:00.000Z",
+  "files": [
+    {
+      "path": "src/index.ts",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "generatedHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "templateSourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ]
+}

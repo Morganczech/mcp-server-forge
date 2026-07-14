@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "example-knowledge",
+    "title": "Example Knowledge",
+    "description": "A fictional reviewed knowledge renderer fixture.",
+    "language": "en",
+    "license": "MIT"
+  },
+  "server": {
+    "name": "example-knowledge",
+    "version": "0.2.0",
+    "description": "answer from reviewed fictional knowledge",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": false,
+      "resources": true,
+      "prompts": false
+    }
+  },
+  "knowledge": {
+    "enabled": true,
+    "sources": []
+  },
+  "documentation": {
+    "language": "en",
+    "outputs": {
+      "readme": true,
+      "shortSystemPrompt": true
+    }
+  },
+  "distribution": {
+    "type": "local-entrypoint",
+    "entrypoint": "dist/index.js"
+  },
+  "security": {
+    "networkAccess": "none",
+    "shellAccess": false,
+    "fileWrite": false,
+    "fileDelete": false,
+    "requireConfirmation": true
+  }
+}

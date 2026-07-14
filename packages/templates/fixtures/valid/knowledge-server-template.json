@@ -1,0 +1,31 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "knowledge-typescript-server",
+    "version": "1.0.0",
+    "title": "Knowledge server",
+    "description": "A valid knowledge template fixture.",
+    "kind": "knowledge-server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "data/manifest.json",
+      "source": "files/data/manifest.json.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "condition": { "field": "knowledge.enabled", "equals": true }
+    },
+    {
+      "path": "SYSTEM_PROMPT.md",
+      "source": "files/SYSTEM_PROMPT.md.hbs",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": false
+    }
+  ],
+  "directories": [{ "path": "data", "required": true }]
+}

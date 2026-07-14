@@ -1,0 +1,22 @@
+{
+  "manifestVersion": "1",
+  "template": {
+    "id": "bad-source",
+    "version": "1.0.0",
+    "title": "Bad source",
+    "description": "Absolute source fixture.",
+    "kind": "server",
+    "runtime": "node",
+    "language": "typescript"
+  },
+  "compatibility": { "forgeConfigSchema": ["1"] },
+  "files": [
+    {
+      "path": "README.md",
+      "source": "/tmp/readme",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true
+    }
+  ]
+}
