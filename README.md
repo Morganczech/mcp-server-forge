@@ -1,8 +1,8 @@
 # mcp-server-forge
 
 `mcp-server-forge` is an early-stage toolkit for designing, generating,
-validating, and documenting standard Model Context Protocol (MCP) servers. The
-first interface will be a CLI, followed later by an MCP server.
+validating, and documenting standard Model Context Protocol (MCP) servers. Its
+current interface is a read-only CLI; an MCP server interface is planned later.
 
 The repository contains project infrastructure, validation/import contracts,
 template ownership rules, and pure in-memory placeholder rendering. It does
@@ -37,10 +37,11 @@ pnpm --filter @mcp-server-forge/cli dev preview \
   --template ./packages/templates/templates/basic-typescript-server
 ```
 
-The future installed command is:
+The reserved installed commands are:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
+mcp-forge preview --root ./project --template ./template
 ```
 
 See [docs/cli.md](docs/cli.md) and [docs/cli-preview.md](docs/cli-preview.md)
@@ -77,9 +78,14 @@ See [ROADMAP.md](ROADMAP.md), [TASKS.md](TASKS.md), and
 
 ## Status
 
-The project is in its initial scaffolding phase. Public APIs and configuration
-formats are not stable yet. The first version of the configuration contract is
-documented in
+The project is available as the first public alpha release, `v0.1.0-alpha.1`. It
+supports configuration validation, safe import normalization, deterministic
+in-memory rendering, bounded filesystem inspection, and complete read-only
+generation previews. It still does not write generated projects or produce a
+functional MCP SDK server.
+
+Public APIs and configuration formats may change during the alpha series. The
+first version of the configuration contract is documented in
 [docs/configuration-schema-v1.md](docs/configuration-schema-v1.md).
 
 `@mcp-server-forge/validators` provides stable JSON diagnostics, semantic and
@@ -107,6 +113,9 @@ metadata. It performs no filesystem access or plan application. See
 directories into abstract target metadata, optional validated generation state,
 and bounded in-memory template sources. It never writes or recursively scans a
 project. See [docs/filesystem-adapter.md](docs/filesystem-adapter.md).
+
+Release history and current limitations are recorded in
+[CHANGELOG.md](CHANGELOG.md).
 
 ## License
 

@@ -72,7 +72,7 @@ async function capture(
   let stderr = "";
   const exitCode = await runCli(args, {
     cwd,
-    version: "0.0.0",
+    version: "0.1.0-alpha.1",
     stdout: { write: (chunk) => (stdout += chunk) },
     stderr: { write: (chunk) => (stderr += chunk) },
   });
@@ -542,7 +542,7 @@ describe("CLI help and version", () => {
     );
     expect(await capture(["--version"])).toEqual({
       exitCode: 0,
-      stdout: "0.0.0\n",
+      stdout: "0.1.0-alpha.1\n",
       stderr: "",
     });
   });
