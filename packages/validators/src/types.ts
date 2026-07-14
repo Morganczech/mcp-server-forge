@@ -11,7 +11,8 @@ export type ForgeDiagnosticSource =
   | "import"
   | "template"
   | "generation"
-  | "plan";
+  | "plan"
+  | "filesystem";
 export type ForgeDiagnosticCategory =
   | "configuration"
   | "semantic"
@@ -23,7 +24,8 @@ export type ForgeDiagnosticCategory =
   | "import"
   | "template"
   | "generation"
-  | "plan";
+  | "plan"
+  | "filesystem";
 export type ForgeDiagnosticPathSegment = string | number;
 
 export interface ForgeDiagnostic {

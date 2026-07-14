@@ -27,7 +27,8 @@ interface ForgeDiagnostic {
     | "import"
     | "template"
     | "generation"
-    | "plan";
+    | "plan"
+    | "filesystem";
   suggestion?: string;
   documentationUrl?: string;
   metadata?: Record<string, unknown>;
@@ -72,6 +73,7 @@ identifies the owning area:
 - `TPL_`: template manifests, generated-file state, ownership, and planning.
 - `GEN_`: restricted in-memory template rendering and output validation.
 - `PLAN_`: render-to-plan consistency and read-only generation decisions.
+- `FS_`: bounded read-only filesystem inspection and root confinement.
 
 Codes are independent of message wording. Renaming, rephrasing, or localizing a
 message does not change its code.
@@ -140,6 +142,11 @@ Stable `PLAN_` diagnostics cover preview request consistency, ambiguous state,
 unsafe file decisions, manual review, and orphaned generated files. Their
 complete meanings and severities are listed in
 [generation-preview.md](generation-preview.md#safety-and-diagnostics).
+
+Stable `FS_` diagnostics cover explicit roots, confined portable paths,
+symlinks, regular-file reads, size limits, generation state, and template
+bundles. Their complete meanings and safety policy are listed in
+[filesystem-adapter.md](filesystem-adapter.md#diagnostics).
 
 ## Schema and semantic validation
 

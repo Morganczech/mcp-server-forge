@@ -20,6 +20,8 @@
 - [x] Implement the pure in-memory renderer contract for placeholder templates.
 - [x] Connect rendered output to deterministic, read-only generation preview
       planning over abstract target and previous state.
+- [x] Implement bounded read-only filesystem inspection for target state,
+      generation state, and template bundles.
 - [ ] Implement filesystem generation only after rendering and planning are
       reviewed together.
 - [ ] Implement additional CLI commands after their underlying workflows exist.

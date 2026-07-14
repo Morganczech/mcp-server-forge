@@ -44,6 +44,10 @@ file is never automatically replaced. Portable `/` paths and lowercase SHA-256
 hashes use the existing template contracts. Unmanaged target files that occur in
 neither the manifest nor previous state are ignored.
 
+The optional read-only filesystem integration that creates this abstract input
+is documented in [filesystem-adapter.md](filesystem-adapter.md). Preview itself
+remains a pure in-memory operation.
+
 Previous state supplies the last generated hash and the ownership/update policy
 recorded for each file. Its template identity and file policy must agree with
 the selected manifest before it can participate in a decision.
@@ -167,7 +171,8 @@ The generators package exports:
 
 ## Not implemented
 
-- filesystem target discovery, hashing, writes, or deletes;
+- filesystem writes or deletes; bounded target inspection lives in the separate
+  read-only filesystem adapter;
 - generation-state creation or persistence;
 - plan application, interactive approval, or automatic conflict repair;
 - marker-based or structural merge;

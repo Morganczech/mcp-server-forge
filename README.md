@@ -46,6 +46,7 @@ packages/
   core/         Shared domain and orchestration logic
   schemas/      Zod schemas for configuration contracts
   generators/   Future code and documentation generators
+  fs-adapter/    Bounded read-only filesystem inspection
   validators/   Configuration and generated-output validation
   importers/    Import of existing MCP server definitions
   templates/    Versioned generation templates
@@ -91,6 +92,11 @@ a complete read-only generation preview over abstract target and previous-state
 metadata. It performs no filesystem access or plan application. See
 [docs/rendering.md](docs/rendering.md) and
 [docs/generation-preview.md](docs/generation-preview.md).
+
+`@mcp-server-forge/fs-adapter` safely converts explicit project and template
+directories into abstract target metadata, optional validated generation state,
+and bounded in-memory template sources. It never writes or recursively scans a
+project. See [docs/filesystem-adapter.md](docs/filesystem-adapter.md).
 
 ## License
 

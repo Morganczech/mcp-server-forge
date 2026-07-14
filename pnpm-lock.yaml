@@ -45,6 +45,18 @@ importers:
 
   packages/core: {}
 
+  packages/fs-adapter:
+    dependencies:
+      '@mcp-server-forge/generators':
+        specifier: workspace:*
+        version: link:../generators
+      '@mcp-server-forge/templates':
+        specifier: workspace:*
+        version: link:../templates
+      '@mcp-server-forge/validators':
+        specifier: workspace:*
+        version: link:../validators
+
   packages/generators:
     dependencies:
       '@mcp-server-forge/schemas':

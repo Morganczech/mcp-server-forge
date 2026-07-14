@@ -20,6 +20,9 @@ export default defineConfig({
       "@mcp-server-forge/generators": fileURLToPath(
         new URL("./packages/generators/src/index.ts", import.meta.url),
       ),
+      "@mcp-server-forge/fs-adapter": fileURLToPath(
+        new URL("./packages/fs-adapter/src/index.ts", import.meta.url),
+      ),
     },
   },
   test: {
