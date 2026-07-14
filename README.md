@@ -28,19 +28,29 @@ Validate a Forge configuration during development:
 pnpm --filter @mcp-server-forge/cli dev validate ./mcp-forge.json
 ```
 
+Preview generation without changing a target project:
+
+```bash
+pnpm --filter @mcp-server-forge/cli dev preview \
+  --config ./packages/generators/fixtures/valid/basic-config.json \
+  --root ./target-project \
+  --template ./packages/templates/templates/basic-typescript-server
+```
+
 The future installed command is:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
 ```
 
-See [docs/cli.md](docs/cli.md) for output formats, CI usage, and exit codes.
+See [docs/cli.md](docs/cli.md) and [docs/cli-preview.md](docs/cli-preview.md)
+for output formats, CI usage, and exit codes.
 
 ## Repository layout
 
 ```text
 apps/
-  cli/          Read-only validation command and future CLI workflows
+  cli/          Read-only validation and generation preview workflows
   mcp-server/   Future MCP interface to the forge
 packages/
   core/         Shared domain and orchestration logic

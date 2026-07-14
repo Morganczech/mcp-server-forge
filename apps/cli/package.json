@@ -14,6 +14,9 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
+    "@mcp-server-forge/fs-adapter": "workspace:*",
+    "@mcp-server-forge/generators": "workspace:*",
+    "@mcp-server-forge/templates": "workspace:*",
     "@mcp-server-forge/validators": "workspace:*"
   }
 }

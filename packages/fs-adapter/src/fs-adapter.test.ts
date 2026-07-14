@@ -248,6 +248,28 @@ describe("loadGenerationState", () => {
     });
   });
 
+  it("loads an explicit confined generation-state path", async () => {
+    const root = await temporaryDirectory("custom-state");
+    await mkdir(join(root, "state"));
+    await writeFile(
+      join(root, "state/previous.json"),
+      JSON.stringify(generationState()),
+    );
+
+    const result = await loadGenerationState(root, {
+      statePath: "state/previous.json",
+    });
+    expect(result).toMatchObject({ success: true, available: true });
+    expect(
+      codes(await loadGenerationState(root, { statePath: "../outside.json" })),
+    ).toEqual(
+      expect.arrayContaining([
+        "FS_PATH_INVALID",
+        "FS_GENERATION_STATE_READ_FAILED",
+      ]),
+    );
+  });
+
   it("rejects invalid JSON and schema-invalid state", async () => {
     const root = await temporaryDirectory("invalid-state");
     await mkdir(join(root, ".mcp-forge"));

@@ -201,8 +201,8 @@ layer discovers or writes filesystem state.
 - no filesystem source loader or output writer;
 - no generation-state creation; comparison is limited to the separate read-only
   generation preview contract;
-- no plan application, merge markers, migrations, registry, clients, CLI, or MCP
-  tools.
+- no plan application, merge markers, migrations, registry, clients, or MCP
+  tools; the separate CLI can preview output but cannot apply it.
 
 The included basic and knowledge templates intentionally generate transparent
 placeholder projects. Their README and package metadata state that dependency

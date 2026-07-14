@@ -4,10 +4,15 @@ import {
   type ValidateCommandContext,
   type ValidateCommandOptions,
 } from "./commands/validate.js";
+import { runPreviewCommand } from "./commands/preview.js";
+import { parsePreviewArguments } from "./commands/preview-options.js";
 import { createCliError, type CliError } from "./errors/cli-errors.js";
 import { CLI_EXIT_CODES, type CliExitCode } from "./exit-codes.js";
+import { GLOBAL_HELP, PREVIEW_HELP, VALIDATE_HELP } from "./help.js";
 
-export type CliContext = ValidateCommandContext;
+export interface CliContext extends ValidateCommandContext {
+  version?: string;
+}
 
 type ParsedValidateArguments =
   | { success: true; options: ValidateCommandOptions }
@@ -92,8 +97,8 @@ export function parseValidateArguments(
   return { success: true, options };
 }
 
-function renderUsageError(error: CliError): string {
-  return `ERROR ${error.code}\n\n${error.message}\n\nUsage: mcp-forge validate [config-path] [options]\n`;
+function renderUsageError(error: CliError, usage: string): string {
+  return `ERROR ${error.code}\n\n${error.message}\n\n${usage}`;
 }
 
 export async function runCli(
@@ -102,20 +107,48 @@ export async function runCli(
 ): Promise<CliExitCode> {
   const [command, ...commandArguments] = args;
 
-  if (command !== "validate") {
+  if (command === "--help" || command === "-h") {
+    context.stdout.write(GLOBAL_HELP);
+    return CLI_EXIT_CODES.success;
+  }
+  if (command === "--version" || command === "-v") {
+    context.stdout.write(`${context.version ?? "unknown"}\n`);
+    return CLI_EXIT_CODES.success;
+  }
+  if (
+    (command === "validate" || command === "preview") &&
+    (commandArguments[0] === "--help" || commandArguments[0] === "-h")
+  ) {
+    context.stdout.write(command === "validate" ? VALIDATE_HELP : PREVIEW_HELP);
+    return CLI_EXIT_CODES.success;
+  }
+
+  if (command !== "validate" && command !== "preview") {
     const message =
       command === undefined
         ? "A command is required."
         : `Unknown command: ${command}`;
     context.stderr.write(
-      renderUsageError(createCliError("CLI_INVALID_ARGUMENT", message)),
+      renderUsageError(
+        createCliError("CLI_INVALID_ARGUMENT", message),
+        GLOBAL_HELP,
+      ),
     );
     return CLI_EXIT_CODES.invalidUsage;
   }
 
+  if (command === "preview") {
+    const parsed = parsePreviewArguments(commandArguments);
+    if (!parsed.success) {
+      context.stderr.write(renderUsageError(parsed.error, PREVIEW_HELP));
+      return CLI_EXIT_CODES.invalidUsage;
+    }
+    return runPreviewCommand(parsed.options, context);
+  }
+
   const parsed = parseValidateArguments(commandArguments);
   if (!parsed.success) {
-    context.stderr.write(renderUsageError(parsed.error));
+    context.stderr.write(renderUsageError(parsed.error, VALIDATE_HELP));
     return CLI_EXIT_CODES.invalidUsage;
   }
 

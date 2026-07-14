@@ -10,6 +10,9 @@
   "exclude": ["src/**/*.test.ts"],
   "references": [
     { "path": "../../packages/schemas/tsconfig.build.json" },
-    { "path": "../../packages/validators/tsconfig.build.json" }
+    { "path": "../../packages/validators/tsconfig.build.json" },
+    { "path": "../../packages/templates/tsconfig.build.json" },
+    { "path": "../../packages/generators/tsconfig.build.json" },
+    { "path": "../../packages/fs-adapter/tsconfig.build.json" }
   ]
 }

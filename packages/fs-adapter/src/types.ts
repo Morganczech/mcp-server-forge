@@ -15,6 +15,10 @@ export interface ForgeFilesystemReadOptions {
   maxFileSizeBytes?: number;
 }
 
+export interface ForgeGenerationStateReadOptions extends ForgeFilesystemReadOptions {
+  statePath?: string;
+}
+
 export interface ForgeManagedTargetPath {
   path: string;
   expectedExecutable?: boolean;
@@ -48,6 +52,7 @@ export interface ForgeGenerationWorkspaceInspectionRequest {
   projectRoot: string;
   templateDirectory: string;
   options?: ForgeFilesystemReadOptions;
+  statePath?: string;
 }
 
 export interface ForgeGenerationWorkspaceInspection {

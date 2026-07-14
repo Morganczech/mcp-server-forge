@@ -2,16 +2,21 @@
 
 ## Status and scope
 
-The first CLI command validates an existing `mcp-forge.json` without modifying
-it:
+The CLI provides two read-only workflows:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
+mcp-forge preview --template ./path/to/template
 ```
 
-The command reads one UTF-8 JSON file, validates schema version 1, runs Forge
-semantic and security diagnostics, renders the result, and returns a documented
-exit code. It does not generate, repair, install, import, or publish anything.
+The validate command reads one UTF-8 JSON file, validates schema version 1, runs
+Forge semantic and security diagnostics, renders the result, and returns a
+documented exit code. It does not generate, repair, install, import, or publish
+anything.
+
+Preview composes validation, bounded filesystem inspection, in-memory rendering,
+and generation planning. Its contract is documented in
+[cli-preview.md](cli-preview.md).
 
 ## Development setup
 
@@ -177,6 +182,7 @@ checks are separate from schema and semantic validation.
 | `2`  | The file cannot be loaded, read, parsed, or used as a JSON root. |
 | `3`  | Warnings exist and `--warnings-as-errors` is active.             |
 | `4`  | Invalid command, option, format, or positional argument count.   |
+| `5`  | Preview exists but requires conflict or manual review.           |
 
 Errors take precedence over warnings: a result containing both uses exit code 1,
 even with `--warnings-as-errors`.
@@ -197,3 +203,14 @@ mcp-forge validate ./mcp-forge.json --format json --warnings-as-errors
 ```
 
 No GitHub Actions workflow is included in this phase.
+
+## General help
+
+```bash
+mcp-forge --help
+mcp-forge validate --help
+mcp-forge preview --help
+mcp-forge --version
+```
+
+The version is read from local package metadata without network access.

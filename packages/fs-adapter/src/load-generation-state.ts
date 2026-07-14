@@ -10,7 +10,7 @@ import {
 } from "./filesystem.js";
 import {
   DEFAULT_GENERATION_STATE_PATH,
-  type ForgeFilesystemReadOptions,
+  type ForgeGenerationStateReadOptions,
   type ForgeGenerationStateLoadResult,
 } from "./types.js";
 
@@ -18,7 +18,7 @@ const decoder = new TextDecoder("utf-8", { fatal: true });
 
 export async function loadGenerationState(
   rootPath: string,
-  options: ForgeFilesystemReadOptions = {},
+  options: ForgeGenerationStateReadOptions = {},
 ): Promise<ForgeGenerationStateLoadResult> {
   const root = await resolveDirectoryRoot(rootPath);
   const limit = resolveMaxFileSize(options.maxFileSizeBytes);
@@ -31,10 +31,8 @@ export async function loadGenerationState(
     };
   }
 
-  const inspected = await inspectRegularFile(
-    root.path,
-    DEFAULT_GENERATION_STATE_PATH,
-  );
+  const statePath = options.statePath ?? DEFAULT_GENERATION_STATE_PATH;
+  const inspected = await inspectRegularFile(root.path, statePath);
   if (inspected.kind === "missing") {
     return { success: true, available: false, diagnostics: [] };
   }
@@ -42,10 +40,7 @@ export async function loadGenerationState(
     const resultDiagnostics = sortDiagnostics([
       ...diagnostics,
       ...inspected.diagnostics,
-      filesystemDiagnostic(
-        "FS_GENERATION_STATE_READ_FAILED",
-        DEFAULT_GENERATION_STATE_PATH,
-      ),
+      filesystemDiagnostic("FS_GENERATION_STATE_READ_FAILED", statePath),
     ]);
     return { success: false, available: false, diagnostics: resultDiagnostics };
   }
@@ -54,18 +49,14 @@ export async function loadGenerationState(
   if (read.kind !== "content") {
     if (read.kind === "too-large") {
       diagnostics.push(
-        filesystemDiagnostic(
-          "FS_FILE_TOO_LARGE",
-          DEFAULT_GENERATION_STATE_PATH,
-          { maxFileSizeBytes: limit.value, size: read.size },
-        ),
+        filesystemDiagnostic("FS_FILE_TOO_LARGE", statePath, {
+          maxFileSizeBytes: limit.value,
+          size: read.size,
+        }),
       );
     }
     diagnostics.push(
-      filesystemDiagnostic(
-        "FS_GENERATION_STATE_READ_FAILED",
-        DEFAULT_GENERATION_STATE_PATH,
-      ),
+      filesystemDiagnostic("FS_GENERATION_STATE_READ_FAILED", statePath),
     );
     return {
       success: false,
@@ -79,10 +70,7 @@ export async function loadGenerationState(
     parsed = JSON.parse(decoder.decode(read.content));
   } catch {
     diagnostics.push(
-      filesystemDiagnostic(
-        "FS_GENERATION_STATE_INVALID",
-        DEFAULT_GENERATION_STATE_PATH,
-      ),
+      filesystemDiagnostic("FS_GENERATION_STATE_INVALID", statePath),
     );
     return {
       success: false,
@@ -94,10 +82,7 @@ export async function loadGenerationState(
   const validated = validateGenerationState(parsed);
   if (!validated.success) {
     diagnostics.push(
-      filesystemDiagnostic(
-        "FS_GENERATION_STATE_INVALID",
-        DEFAULT_GENERATION_STATE_PATH,
-      ),
+      filesystemDiagnostic("FS_GENERATION_STATE_INVALID", statePath),
       ...validated.diagnostics,
     );
     return {

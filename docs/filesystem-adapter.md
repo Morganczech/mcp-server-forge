@@ -15,8 +15,8 @@ APIs, but filesystem objects never enter their domain contracts.
 
 - `loadTargetState(rootPath, managedPaths, options)` inspects only declared
   target paths and returns hashes/metadata without returning target content;
-- `loadGenerationState(rootPath, options)` optionally loads
-  `.mcp-forge/generated-state.json`;
+- `loadGenerationState(rootPath, options)` optionally loads the default state or
+  an explicit portable `statePath` confined inside root;
 - `loadTemplateBundle(templateDirectory, options)` loads `template.json` and
   only its declared text sources;
 - `inspectGenerationWorkspace(request)` composes those reads and reports whether

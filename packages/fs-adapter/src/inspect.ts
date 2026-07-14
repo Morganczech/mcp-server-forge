@@ -15,7 +15,12 @@ export async function inspectGenerationWorkspace(
 ): Promise<ForgeGenerationWorkspaceInspection> {
   const [template, generationState] = await Promise.all([
     loadTemplateBundle(request.templateDirectory, request.options),
-    loadGenerationState(request.projectRoot, request.options),
+    loadGenerationState(request.projectRoot, {
+      ...request.options,
+      ...(request.statePath === undefined
+        ? {}
+        : { statePath: request.statePath }),
+    }),
   ]);
 
   const managedByPath = new Map<string, ForgeManagedTargetPath>();
