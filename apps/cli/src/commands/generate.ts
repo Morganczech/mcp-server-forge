@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 
 import {
   createForgeApplyContract,
+  createProjectChangePlan,
   type ForgeApplyContract,
 } from "@mcp-server-forge/core";
 import {
@@ -245,6 +246,7 @@ export async function runGenerateCommand(
 
   const generatedAt = context.now?.() ?? new Date().toISOString();
   const displayedContract = createContract(displayed, generatedAt);
+  const displayedPlan = createProjectChangePlan(displayed.preview, generatedAt);
   if (!displayedContract.success) {
     context.stderr.write(
       `${formatDiagnostics(displayedContract.diagnostics)}\n`,
@@ -264,7 +266,7 @@ export async function runGenerateCommand(
     return CLI_EXIT_CODES.applyNotConfirmed;
   }
   const confirmed = await context.confirm(
-    "Apply the displayed file changes and update generation state? [y/N] ",
+    `Apply plan ${displayedPlan.planId} and update generation state? [y/N] `,
   );
   if (!confirmed) {
     context.stderr.write("Generation was not applied.\n");
@@ -282,8 +284,11 @@ export async function runGenerateCommand(
       : CLI_EXIT_CODES.unsafePreview;
   }
   const refreshedContract = createContract(refreshed, generatedAt);
+  const refreshedPlan = createProjectChangePlan(refreshed.preview, generatedAt);
   if (
     !refreshedContract.success ||
+    refreshedPlan.planId !== displayedPlan.planId ||
+    refreshedPlan.planHash !== displayedPlan.planHash ||
     !sameContract(displayedContract.data, refreshedContract.data)
   ) {
     context.stderr.write(

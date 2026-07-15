@@ -7,6 +7,31 @@ pre-release identifiers while its public contracts are still evolving.
 
 ## Unreleased
 
+### Added
+
+- pure Project Inspection, generated-server permission, and deterministic
+  Project Change Plan contracts;
+- read-only `mcp-forge inspect` text and JSON output for project health,
+  generation state, managed files, permissions, and diagnostics;
+- experimental read-only `mcp-forge tui` screens for interactive inspection.
+
+### Changed
+
+- interactive generation confirmations are bound to the displayed deterministic
+  plan identity before the existing fresh-preview and Apply Contract checks.
+
+### Documentation
+
+- document the reusable engine boundary, terminal client isolation, command
+  usage, and current non-goals.
+
+### Known limitations
+
+- the TUI is a small terminal-only foundation and has no apply or configuration
+  editing actions;
+- a remote engine API, approval tokens, desktop, web, editor, and MCP clients
+  remain future work.
+
 ## [0.1.0-alpha.2] - 2026-07-15
 
 Second public alpha release of MCP Server Forge.

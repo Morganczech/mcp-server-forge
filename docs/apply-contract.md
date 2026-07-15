@@ -21,3 +21,9 @@ executing it. A valid contract is an authorization input, not proof that the
 filesystem is unchanged; executors must check every precondition again. The
 validator also rejects unsorted or nested operation paths and state entries that
 are backed by neither a write operation nor unchanged previous state.
+
+The broader `ForgeProjectChangePlan` is a read-only view adapted from the same
+generation preview. Its deterministic identifier and hash bind an interactive
+confirmation to one exact plan, while the Apply Contract remains the only input
+to filesystem execution. See the
+[engine and TUI architecture](architecture/forge-engine-and-tui.md).

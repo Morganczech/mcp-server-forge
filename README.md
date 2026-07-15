@@ -2,8 +2,9 @@
 
 `mcp-server-forge` is an early-stage toolkit for designing, generating,
 validating, and documenting standard Model Context Protocol (MCP) servers. Its
-CLI can validate, preview, and interactively apply a safe generation plan; an
-MCP server interface is planned later.
+CLI can validate, inspect, preview, interactively apply a safe generation plan,
+and open an experimental read-only terminal interface; an MCP server interface
+is planned later.
 
 The repository contains project infrastructure, validation/import contracts,
 template ownership rules, and pure in-memory placeholder rendering. It does not
@@ -81,6 +82,30 @@ node -e "require('node:fs').mkdirSync('./target-project', { recursive: true })"
 node apps/cli/dist/index.js preview --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
+### Inspect
+
+Inspect project health, configured permissions, generation state, managed files,
+and diagnostics without writing. Add `--template` for a complete current
+generation preview inside the inspection.
+
+```bash
+node apps/cli/dist/index.js inspect --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
+node apps/cli/dist/index.js inspect --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --json
+```
+
+### Experimental TUI
+
+From an interactive terminal, open the read-only terminal interface:
+
+```bash
+node apps/cli/dist/index.js tui --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
+```
+
+The TUI can refresh and display inspection or preview information. It cannot
+apply plans, delete files, change permissions or configuration, install
+dependencies, or run shell commands. In automation or redirected terminals use
+`mcp-forge inspect --json` instead.
+
 ### Generate
 
 Generate always creates a fresh preview before asking for confirmation. It
@@ -96,8 +121,10 @@ npm. The reserved installed command forms are:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
+mcp-forge inspect --root ./project --json
 mcp-forge preview --root ./project --template ./template
 mcp-forge generate --root ./project --template ./template
+mcp-forge tui --root ./project --template ./template
 ```
 
 See [docs/cli.md](docs/cli.md), [docs/cli-preview.md](docs/cli-preview.md), and
@@ -112,10 +139,10 @@ For repeatable end-to-end verification, see the
 
 ```text
 apps/
-  cli/          Validation, preview, and confirmed generation workflows
+  cli/          Validation, inspection, TUI, preview, and generation workflows
   mcp-server/   Future MCP interface to the forge
 packages/
-  core/         Pure apply contract and shared orchestration logic
+  core/         Pure inspection, change-plan, and apply contracts
   schemas/      Zod schemas for configuration contracts
   generators/   Future code and documentation generators
   fs-adapter/    Bounded filesystem inspection and apply execution
@@ -139,11 +166,11 @@ See [ROADMAP.md](ROADMAP.md), [TASKS.md](TASKS.md), and
 
 ## Status
 
-The project is available as the first public alpha release, `v0.1.0-alpha.1`. It
-supports configuration validation, safe import normalization, deterministic
-in-memory rendering, bounded filesystem inspection, complete read-only
-generation previews, and confirmed filesystem application. It still does not
-produce a functional MCP SDK server.
+The current workspace version is `v0.1.0-alpha.2`. It supports configuration
+validation, safe import normalization, deterministic in-memory rendering,
+bounded filesystem inspection, complete read-only generation previews,
+structured project inspection, an experimental read-only TUI, and confirmed
+filesystem application. It still does not produce a functional MCP SDK server.
 
 Public APIs and configuration formats may change during the alpha series. The
 first version of the configuration contract is documented in
@@ -171,8 +198,10 @@ metadata. It performs no filesystem access or plan application. See
 [docs/generation-preview.md](docs/generation-preview.md).
 
 `@mcp-server-forge/core` converts a safe preview into a pure, validated Apply
-Contract and next generation state without filesystem access. See
-[docs/apply-contract.md](docs/apply-contract.md).
+Contract and next generation state without filesystem access. It also exposes
+pure Project Inspection and Project Change Plan contracts. See
+[docs/apply-contract.md](docs/apply-contract.md) and the
+[engine and TUI architecture](docs/architecture/forge-engine-and-tui.md).
 
 `@mcp-server-forge/fs-adapter` safely converts explicit project and template
 directories into abstract target metadata, optional validated generation state,

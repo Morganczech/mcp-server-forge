@@ -8,12 +8,17 @@ import { runPreviewCommand } from "./commands/preview.js";
 import { parsePreviewArguments } from "./commands/preview-options.js";
 import { runGenerateCommand } from "./commands/generate.js";
 import { parseGenerateArguments } from "./commands/generate-options.js";
+import { runInspectCommand } from "./commands/inspect.js";
+import { parseInspectArguments } from "./commands/inspect-options.js";
+import { runTuiCommand } from "./commands/tui.js";
 import { createCliError, type CliError } from "./errors/cli-errors.js";
 import { CLI_EXIT_CODES, type CliExitCode } from "./exit-codes.js";
 import {
   GENERATE_HELP,
   GLOBAL_HELP,
+  INSPECT_HELP,
   PREVIEW_HELP,
+  TUI_HELP,
   VALIDATE_HELP,
 } from "./help.js";
 
@@ -22,6 +27,7 @@ export interface CliContext extends ValidateCommandContext {
   isInteractive?: boolean;
   confirm?: (prompt: string) => Promise<boolean>;
   now?: () => string;
+  readTuiKey?: () => Promise<string>;
 }
 
 type ParsedValidateArguments =
@@ -128,7 +134,9 @@ export async function runCli(
   if (
     (command === "validate" ||
       command === "preview" ||
-      command === "generate") &&
+      command === "generate" ||
+      command === "inspect" ||
+      command === "tui") &&
     (commandArguments[0] === "--help" || commandArguments[0] === "-h")
   ) {
     context.stdout.write(
@@ -136,7 +144,11 @@ export async function runCli(
         ? VALIDATE_HELP
         : command === "preview"
           ? PREVIEW_HELP
-          : GENERATE_HELP,
+          : command === "generate"
+            ? GENERATE_HELP
+            : command === "inspect"
+              ? INSPECT_HELP
+              : TUI_HELP,
     );
     return CLI_EXIT_CODES.success;
   }
@@ -144,7 +156,9 @@ export async function runCli(
   if (
     command !== "validate" &&
     command !== "preview" &&
-    command !== "generate"
+    command !== "generate" &&
+    command !== "inspect" &&
+    command !== "tui"
   ) {
     const message =
       command === undefined
@@ -175,6 +189,34 @@ export async function runCli(
       return CLI_EXIT_CODES.invalidUsage;
     }
     return runGenerateCommand(parsed.options, context);
+  }
+
+  if (command === "inspect" || command === "tui") {
+    const parsed = parseInspectArguments(commandArguments);
+    if (!parsed.success) {
+      context.stderr.write(
+        renderUsageError(
+          parsed.error,
+          command === "inspect" ? INSPECT_HELP : TUI_HELP,
+        ),
+      );
+      return CLI_EXIT_CODES.invalidUsage;
+    }
+    if (command === "tui" && parsed.options.json) {
+      context.stderr.write(
+        renderUsageError(
+          createCliError(
+            "CLI_INVALID_ARGUMENT",
+            "--json is available on inspect, not tui.",
+          ),
+          TUI_HELP,
+        ),
+      );
+      return CLI_EXIT_CODES.invalidUsage;
+    }
+    return command === "inspect"
+      ? runInspectCommand(parsed.options, context)
+      : runTuiCommand(parsed.options, context);
   }
 
   const parsed = parseValidateArguments(commandArguments);

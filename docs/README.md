@@ -13,4 +13,7 @@ Current references include the
 [filesystem execution](filesystem-generation.md), and interactive
 [generate CLI](cli-generate.md). Repeatable verification is covered by the
 [smoke-test procedure](testing/smoke-tests.md), and the manual source-release
-process is documented in the [release checklist](releasing.md).
+process is documented in the [release checklist](releasing.md). The pure Project
+Inspection and Project Change Plan contracts and the experimental read-only
+terminal client are described in the
+[engine and TUI architecture](architecture/forge-engine-and-tui.md).

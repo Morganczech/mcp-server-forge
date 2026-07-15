@@ -2,13 +2,15 @@
 
 ## Status and scope
 
-The CLI provides two read-only workflows and one explicitly confirmed mutating
-workflow:
+The CLI provides validation, structured project inspection, read-only preview,
+an experimental read-only TUI, and one explicitly confirmed mutating workflow:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
+mcp-forge inspect --json
 mcp-forge preview --template ./path/to/template
 mcp-forge generate --template ./path/to/template
+mcp-forge tui --template ./path/to/template
 ```
 
 The validate command reads one UTF-8 JSON file, validates schema version 1, runs
@@ -24,6 +26,15 @@ Generate displays the same preview, requires interactive TTY confirmation,
 recomputes the Apply Contract from fresh state, and delegates writes to the
 filesystem executor. Its contract is documented in
 [cli-generate.md](cli-generate.md).
+
+Inspect emits a structured Project Inspection in text or JSON. It reads the
+configuration and generation state, compares tracked files, and optionally
+adapts a fresh generation preview when `--template` is supplied. It never
+writes. See the [engine architecture](architecture/forge-engine-and-tui.md).
+
+The experimental `tui` command presents the same inspection through an
+interactive terminal. It is read-only, requires both input and output TTYs, and
+rejects redirected execution with a recommendation to use `inspect`.
 
 ## Development setup
 
@@ -189,7 +200,7 @@ checks are separate from schema and semantic validation.
 | `2`  | The file cannot be loaded, read, parsed, or used as a JSON root. |
 | `3`  | Warnings exist and `--warnings-as-errors` is active.             |
 | `4`  | Invalid command, option, format, or positional argument count.   |
-| `5`  | Preview exists but requires conflict or manual review.           |
+| `5`  | Preview or inspection requires conflict or manual review.        |
 | `6`  | Apply confirmation was refused or unavailable.                   |
 
 Errors take precedence over warnings: a result containing both uses exit code 1,
@@ -219,9 +230,50 @@ create releases.
 ```bash
 mcp-forge --help
 mcp-forge validate --help
+mcp-forge inspect --help
 mcp-forge preview --help
 mcp-forge generate --help
+mcp-forge tui --help
 mcp-forge --version
 ```
 
 The version is read from local package metadata without network access.
+
+## Inspect command
+
+```text
+mcp-forge inspect [--config <path>] [--root <path>] [--template <path>]
+                  [--state <path>] [--json]
+```
+
+Text is intended for people. `--json` writes exactly one versioned Project
+Inspection document to standard output with no ANSI control sequences or
+surrounding prose. A missing configuration is represented as `uninitialized` and
+exits with code 2. Invalid configuration exits 1, filesystem loading errors exit
+2, unsafe tracked-file or preview state exits 5, and a healthy inspection
+exits 0.
+
+Without `--template`, tracked files are compared with saved generation hashes.
+With a template, inspect renders and adapts the same authoritative plan used by
+`preview`; it does not maintain a separate planner.
+
+Inspection permission rows describe the generated server configuration.
+`not-declared` means the relevant key was absent from the source configuration;
+schema defaults are not presented as an explicit decision. No environment or
+secret values are included.
+
+## Experimental TUI command
+
+```text
+mcp-forge tui [--config <path>] [--root <path>] [--template <path>]
+              [--state <path>]
+```
+
+Keys `1` through `4` open overview, permissions, generated files, and
+diagnostics. `r` refreshes, `i` reruns inspection, `p` refreshes preview data,
+`h` opens help, and `q` quits. Preview data is complete only when a template was
+provided. All actions are read-only.
+
+The TUI is an experimental terminal client, not a desktop, web, or editor UI. It
+cannot apply or approve a plan, modify files or configuration, delete data,
+change permissions, install software, or execute commands.

@@ -6,10 +6,35 @@ Commands:
   validate    Validate a Forge configuration without modifying it
   preview     Render and inspect a read-only generation plan
   generate    Preview, confirm, and apply a safe generation plan
+  inspect     Inspect project health, permissions, state, and diagnostics
+  tui         Open the experimental read-only terminal interface
 
 Global options:
   --help      Show this help
   --version   Show the CLI package version
+`;
+
+export const INSPECT_HELP = `Usage: mcp-forge inspect [options]
+
+Options:
+  --config <path>             Forge config relative to the CLI working directory
+  --root <path>               Project root (default: current working directory)
+  --template <path>           Optional template for a complete current preview
+  --state <path>              State path inside root
+  --json                      Emit structured JSON only
+  --help                      Show this help
+`;
+
+export const TUI_HELP = `Usage: mcp-forge tui [options]
+
+Options:
+  --config <path>             Forge config relative to the CLI working directory
+  --root <path>               Project root (default: current working directory)
+  --template <path>           Optional template for preview information
+  --state <path>              State path inside root
+  --help                      Show this help
+
+The experimental TUI is read-only and requires an interactive TTY.
 `;
 
 export const GENERATE_HELP = `Usage: mcp-forge generate --template <path> [options]

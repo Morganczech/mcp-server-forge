@@ -25,5 +25,8 @@
 - [x] Implement the read-only `mcp-forge preview` CLI workflow.
 - [x] Implement filesystem generation through a pure Apply Contract, explicit
       interactive confirmation, and a separately bounded executor.
+- [x] Define pure Project Inspection, permission, and Project Change Plan
+      contracts.
+- [x] Add structured `inspect` and an experimental read-only terminal client.
 - [ ] Implement additional CLI commands after their underlying workflows exist.
 - [ ] Implement the forge MCP server.

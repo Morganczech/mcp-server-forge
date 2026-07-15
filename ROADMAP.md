@@ -20,7 +20,8 @@
 
 ## Phase 4 — Product interfaces
 
-- Build the CLI workflow around the core packages.
+- Build the CLI workflow around pure inspection, planning, and apply contracts.
+- Establish a read-only terminal interface before adding remote clients.
 - Expose selected forge capabilities through an MCP server.
 - Publish end-to-end examples and reference documentation.
 
