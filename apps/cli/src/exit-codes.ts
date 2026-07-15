@@ -5,6 +5,7 @@ export const CLI_EXIT_CODES = {
   warningsAsErrors: 3,
   invalidUsage: 4,
   unsafePreview: 5,
+  applyNotConfirmed: 6,
 } as const;
 
 export type CliExitCode = (typeof CLI_EXIT_CODES)[keyof typeof CLI_EXIT_CODES];

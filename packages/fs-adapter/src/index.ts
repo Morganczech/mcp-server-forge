@@ -1,3 +1,4 @@
+export { applyGenerationWorkspace } from "./apply.js";
 export * from "./inspect.js";
 export * from "./load-generation-state.js";
 export * from "./load-target-state.js";

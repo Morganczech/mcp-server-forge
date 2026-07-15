@@ -35,6 +35,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@mcp-server-forge/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       '@mcp-server-forge/fs-adapter':
         specifier: workspace:*
         version: link:../../packages/fs-adapter
@@ -52,10 +55,23 @@ importers:
 
   examples/company-info: {}
 
-  packages/core: {}
+  packages/core:
+    dependencies:
+      '@mcp-server-forge/generators':
+        specifier: workspace:*
+        version: link:../generators
+      '@mcp-server-forge/templates':
+        specifier: workspace:*
+        version: link:../templates
+      '@mcp-server-forge/validators':
+        specifier: workspace:*
+        version: link:../validators
 
   packages/fs-adapter:
     dependencies:
+      '@mcp-server-forge/core':
+        specifier: workspace:*
+        version: link:../core
       '@mcp-server-forge/generators':
         specifier: workspace:*
         version: link:../generators

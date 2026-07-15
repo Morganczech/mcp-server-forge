@@ -8,4 +8,7 @@ Current references include the
 [restricted rendering](rendering.md), and the read-only
 [generation preview](generation-preview.md), plus bounded
 [filesystem inspection](filesystem-adapter.md) and the
-[preview CLI](cli-preview.md).
+[preview CLI](cli-preview.md). The mutating workflow is split between the pure
+[Apply Contract](apply-contract.md), bounded
+[filesystem execution](filesystem-generation.md), and interactive
+[generate CLI](cli-generate.md).

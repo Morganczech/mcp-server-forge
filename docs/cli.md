@@ -2,11 +2,13 @@
 
 ## Status and scope
 
-The CLI provides two read-only workflows:
+The CLI provides two read-only workflows and one explicitly confirmed mutating
+workflow:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
 mcp-forge preview --template ./path/to/template
+mcp-forge generate --template ./path/to/template
 ```
 
 The validate command reads one UTF-8 JSON file, validates schema version 1, runs
@@ -17,6 +19,11 @@ anything.
 Preview composes validation, bounded filesystem inspection, in-memory rendering,
 and generation planning. Its contract is documented in
 [cli-preview.md](cli-preview.md).
+
+Generate displays the same preview, requires interactive TTY confirmation,
+recomputes the Apply Contract from fresh state, and delegates writes to the
+filesystem executor. Its contract is documented in
+[cli-generate.md](cli-generate.md).
 
 ## Development setup
 
@@ -32,7 +39,7 @@ Run the TypeScript entrypoint during development:
 pnpm --filter @mcp-server-forge/cli dev validate ./mcp-forge.json
 ```
 
-Build the CLI and its schema/validator dependencies:
+Build the CLI and its workspace dependencies:
 
 ```bash
 pnpm build
@@ -183,6 +190,7 @@ checks are separate from schema and semantic validation.
 | `3`  | Warnings exist and `--warnings-as-errors` is active.             |
 | `4`  | Invalid command, option, format, or positional argument count.   |
 | `5`  | Preview exists but requires conflict or manual review.           |
+| `6`  | Apply confirmation was refused or unavailable.                   |
 
 Errors take precedence over warnings: a result containing both uses exit code 1,
 even with `--warnings-as-errors`.
@@ -210,6 +218,7 @@ No GitHub Actions workflow is included in this phase.
 mcp-forge --help
 mcp-forge validate --help
 mcp-forge preview --help
+mcp-forge generate --help
 mcp-forge --version
 ```
 

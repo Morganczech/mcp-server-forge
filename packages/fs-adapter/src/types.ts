@@ -2,6 +2,7 @@ import type {
   ForgeTargetState,
   ForgeTargetFileState,
 } from "@mcp-server-forge/generators";
+import type { ForgeApplyContract } from "@mcp-server-forge/core";
 import type {
   ForgeGenerationState,
   ForgeTemplateManifest,
@@ -62,6 +63,20 @@ export interface ForgeGenerationWorkspaceInspection {
   previousState?: ForgeGenerationState;
   manifest?: ForgeTemplateManifest;
   templateSources?: Record<string, string>;
+  diagnostics: ForgeDiagnostic[];
+}
+
+export interface ForgeApplyExecutionRequest {
+  projectRoot: string;
+  contract: ForgeApplyContract;
+  statePath?: string;
+  options?: ForgeFilesystemReadOptions;
+}
+
+export interface ForgeApplyExecutionResult {
+  success: boolean;
+  appliedFiles: string[];
+  stateWritten: boolean;
   diagnostics: ForgeDiagnostic[];
 }
 

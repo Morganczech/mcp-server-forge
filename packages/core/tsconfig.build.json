@@ -11,7 +11,6 @@
   "references": [
     { "path": "../validators/tsconfig.build.json" },
     { "path": "../templates/tsconfig.build.json" },
-    { "path": "../generators/tsconfig.build.json" },
-    { "path": "../core/tsconfig.build.json" }
+    { "path": "../generators/tsconfig.build.json" }
   ]
 }

@@ -6,12 +6,22 @@ import {
 } from "./commands/validate.js";
 import { runPreviewCommand } from "./commands/preview.js";
 import { parsePreviewArguments } from "./commands/preview-options.js";
+import { runGenerateCommand } from "./commands/generate.js";
+import { parseGenerateArguments } from "./commands/generate-options.js";
 import { createCliError, type CliError } from "./errors/cli-errors.js";
 import { CLI_EXIT_CODES, type CliExitCode } from "./exit-codes.js";
-import { GLOBAL_HELP, PREVIEW_HELP, VALIDATE_HELP } from "./help.js";
+import {
+  GENERATE_HELP,
+  GLOBAL_HELP,
+  PREVIEW_HELP,
+  VALIDATE_HELP,
+} from "./help.js";
 
 export interface CliContext extends ValidateCommandContext {
   version?: string;
+  isInteractive?: boolean;
+  confirm?: (prompt: string) => Promise<boolean>;
+  now?: () => string;
 }
 
 type ParsedValidateArguments =
@@ -116,14 +126,26 @@ export async function runCli(
     return CLI_EXIT_CODES.success;
   }
   if (
-    (command === "validate" || command === "preview") &&
+    (command === "validate" ||
+      command === "preview" ||
+      command === "generate") &&
     (commandArguments[0] === "--help" || commandArguments[0] === "-h")
   ) {
-    context.stdout.write(command === "validate" ? VALIDATE_HELP : PREVIEW_HELP);
+    context.stdout.write(
+      command === "validate"
+        ? VALIDATE_HELP
+        : command === "preview"
+          ? PREVIEW_HELP
+          : GENERATE_HELP,
+    );
     return CLI_EXIT_CODES.success;
   }
 
-  if (command !== "validate" && command !== "preview") {
+  if (
+    command !== "validate" &&
+    command !== "preview" &&
+    command !== "generate"
+  ) {
     const message =
       command === undefined
         ? "A command is required."
@@ -144,6 +166,15 @@ export async function runCli(
       return CLI_EXIT_CODES.invalidUsage;
     }
     return runPreviewCommand(parsed.options, context);
+  }
+
+  if (command === "generate") {
+    const parsed = parseGenerateArguments(commandArguments);
+    if (!parsed.success) {
+      context.stderr.write(renderUsageError(parsed.error, GENERATE_HELP));
+      return CLI_EXIT_CODES.invalidUsage;
+    }
+    return runGenerateCommand(parsed.options, context);
   }
 
   const parsed = parseValidateArguments(commandArguments);

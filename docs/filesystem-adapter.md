@@ -21,6 +21,8 @@ APIs, but filesystem objects never enter their domain contracts.
   only its declared text sources;
 - `inspectGenerationWorkspace(request)` composes those reads and reports whether
   the result is safe to pass to the renderer and generation preview;
+- `applyGenerationWorkspace(request)` executes only a validated Apply Contract,
+  after rechecking its bounded filesystem preconditions;
 - `DEFAULT_MAX_FILE_SIZE_BYTES` is 5 MiB;
 - `DEFAULT_GENERATION_STATE_PATH` is `.mcp-forge/generated-state.json`.
 
@@ -132,9 +134,16 @@ On POSIX systems, `executable` reflects whether any execute bit is set. On
 Windows it is `undefined`, because the POSIX mode bit is not a reliable portable
 signal. Planning must not invent an executable value when it is unavailable.
 
-## What the adapter never does
+## Apply execution
 
-The package contains no write, create-directory, delete, rename, installation,
-network, shell, or child-process operation. It does not render templates, apply
-plans, create generation state, merge shared files, discover roots implicitly,
-or scan complete trees.
+The adapter also exposes a separately documented mutating executor. It accepts
+only the pure Apply Contract produced by `@mcp-server-forge/core`, revalidates
+filesystem preconditions, and performs no planning decisions. See
+[filesystem-generation.md](filesystem-generation.md).
+
+## What the read-only loaders never do
+
+The read-only loading APIs contain no hidden write, create-directory, delete,
+rename, installation, network, shell, or child-process operation. The package
+does not render templates, decide plans, merge shared files, discover roots
+implicitly, or scan complete trees.

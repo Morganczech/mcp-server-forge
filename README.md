@@ -2,11 +2,12 @@
 
 `mcp-server-forge` is an early-stage toolkit for designing, generating,
 validating, and documenting standard Model Context Protocol (MCP) servers. Its
-current interface is a read-only CLI; an MCP server interface is planned later.
+CLI can validate, preview, and interactively apply a safe generation plan; an
+MCP server interface is planned later.
 
 The repository contains project infrastructure, validation/import contracts,
-template ownership rules, and pure in-memory placeholder rendering. It does
-**not** yet write projects or generate a functional MCP SDK server.
+template ownership rules, and pure in-memory placeholder rendering. It does not
+yet generate a functional MCP SDK server.
 
 ## Requirements
 
@@ -37,27 +38,38 @@ pnpm --filter @mcp-server-forge/cli dev preview \
   --template ./packages/templates/templates/basic-typescript-server
 ```
 
+Apply the same safe plan after an interactive confirmation:
+
+```bash
+pnpm --filter @mcp-server-forge/cli dev generate \
+  --config ./packages/generators/fixtures/valid/basic-config.json \
+  --root ./target-project \
+  --template ./packages/templates/templates/basic-typescript-server
+```
+
 The reserved installed commands are:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
 mcp-forge preview --root ./project --template ./template
+mcp-forge generate --root ./project --template ./template
 ```
 
-See [docs/cli.md](docs/cli.md) and [docs/cli-preview.md](docs/cli-preview.md)
-for output formats, CI usage, and exit codes.
+See [docs/cli.md](docs/cli.md), [docs/cli-preview.md](docs/cli-preview.md), and
+[docs/cli-generate.md](docs/cli-generate.md) for command contracts, output, and
+exit codes.
 
 ## Repository layout
 
 ```text
 apps/
-  cli/          Read-only validation and generation preview workflows
+  cli/          Validation, preview, and confirmed generation workflows
   mcp-server/   Future MCP interface to the forge
 packages/
-  core/         Shared domain and orchestration logic
+  core/         Pure apply contract and shared orchestration logic
   schemas/      Zod schemas for configuration contracts
   generators/   Future code and documentation generators
-  fs-adapter/    Bounded read-only filesystem inspection
+  fs-adapter/    Bounded filesystem inspection and apply execution
   validators/   Configuration and generated-output validation
   importers/    Import of existing MCP server definitions
   templates/    Versioned generation templates
@@ -80,9 +92,9 @@ See [ROADMAP.md](ROADMAP.md), [TASKS.md](TASKS.md), and
 
 The project is available as the first public alpha release, `v0.1.0-alpha.1`. It
 supports configuration validation, safe import normalization, deterministic
-in-memory rendering, bounded filesystem inspection, and complete read-only
-generation previews. It still does not write generated projects or produce a
-functional MCP SDK server.
+in-memory rendering, bounded filesystem inspection, complete read-only
+generation previews, and confirmed filesystem application. It still does not
+produce a functional MCP SDK server.
 
 Public APIs and configuration formats may change during the alpha series. The
 first version of the configuration contract is documented in
@@ -109,10 +121,15 @@ metadata. It performs no filesystem access or plan application. See
 [docs/rendering.md](docs/rendering.md) and
 [docs/generation-preview.md](docs/generation-preview.md).
 
+`@mcp-server-forge/core` converts a safe preview into a pure, validated Apply
+Contract and next generation state without filesystem access. See
+[docs/apply-contract.md](docs/apply-contract.md).
+
 `@mcp-server-forge/fs-adapter` safely converts explicit project and template
 directories into abstract target metadata, optional validated generation state,
-and bounded in-memory template sources. It never writes or recursively scans a
-project. See [docs/filesystem-adapter.md](docs/filesystem-adapter.md).
+and bounded in-memory template sources. Its separate executor revalidates Apply
+Contract preconditions and performs confirmed atomic-per-file writes. See
+[docs/filesystem-adapter.md](docs/filesystem-adapter.md).
 
 Release history and current limitations are recorded in
 [CHANGELOG.md](CHANGELOG.md).

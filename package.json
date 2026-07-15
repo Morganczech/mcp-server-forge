@@ -10,7 +10,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "tsc -b packages/schemas/tsconfig.build.json packages/validators/tsconfig.build.json packages/importers/tsconfig.build.json packages/templates/tsconfig.build.json packages/generators/tsconfig.build.json packages/fs-adapter/tsconfig.build.json apps/cli/tsconfig.build.json",
+    "build": "tsc -b packages/schemas/tsconfig.build.json packages/validators/tsconfig.build.json packages/importers/tsconfig.build.json packages/templates/tsconfig.build.json packages/generators/tsconfig.build.json packages/core/tsconfig.build.json packages/fs-adapter/tsconfig.build.json apps/cli/tsconfig.build.json",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

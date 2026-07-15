@@ -12,6 +12,7 @@ export type ForgeDiagnosticSource =
   | "template"
   | "generation"
   | "plan"
+  | "apply"
   | "filesystem";
 export type ForgeDiagnosticCategory =
   | "configuration"
@@ -25,6 +26,7 @@ export type ForgeDiagnosticCategory =
   | "template"
   | "generation"
   | "plan"
+  | "apply"
   | "filesystem";
 export type ForgeDiagnosticPathSegment = string | number;
 

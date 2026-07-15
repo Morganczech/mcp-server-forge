@@ -176,5 +176,7 @@ The generators package exports:
 - generation-state creation or persistence;
 - plan application, interactive approval, or automatic conflict repair;
 - marker-based or structural merge;
-- a generation CLI command or MCP tool;
 - functional MCP SDK project generation.
+
+The separate confirmed application workflow is documented in
+[cli-generate.md](cli-generate.md).

@@ -888,6 +888,76 @@ export const DIAGNOSTIC_CATALOG = Object.freeze({
     suggestion: "Recompute the hash with the shared SHA-256 helper.",
     fixable: false,
   },
+  APPLY_CONTRACT_INVALID: {
+    code: "APPLY_CONTRACT_INVALID",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "The apply contract is invalid.",
+    message:
+      "The requested filesystem operations do not form a trustworthy apply contract.",
+    suggestion:
+      "Create the contract again from a fresh safe generation preview.",
+    fixable: false,
+  },
+  APPLY_UNSAFE_PLAN: {
+    code: "APPLY_UNSAFE_PLAN",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "The generation plan is unsafe to apply.",
+    message:
+      "Conflicts, manual review, orphaned files, or invalid diagnostics block application.",
+    suggestion: "Resolve every unsafe preview outcome before applying it.",
+    fixable: false,
+  },
+  APPLY_DIRECTORY_UNSUPPORTED: {
+    code: "APPLY_DIRECTORY_UNSUPPORTED",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "A standalone template directory cannot be applied yet.",
+    message:
+      "The first apply contract creates only parent directories implied by rendered files.",
+    suggestion:
+      "Remove the standalone directory or add a managed file below it.",
+    fixable: false,
+  },
+  APPLY_TARGET_CHANGED: {
+    code: "APPLY_TARGET_CHANGED",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "A target changed after the apply contract was created.",
+    message:
+      "Filesystem state no longer matches the contract preconditions, so no new writes may start.",
+    suggestion: "Create and confirm a fresh generation preview.",
+    fixable: false,
+  },
+  APPLY_WRITE_FAILED: {
+    code: "APPLY_WRITE_FAILED",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "A generated file could not be written safely.",
+    message:
+      "Filesystem execution stopped before all planned file operations completed.",
+    suggestion:
+      "Review the reported applied files, repair the filesystem, and preview again.",
+    fixable: false,
+  },
+  APPLY_STATE_WRITE_FAILED: {
+    code: "APPLY_STATE_WRITE_FAILED",
+    severity: "error",
+    category: "apply",
+    source: "apply",
+    summary: "Generation state could not be persisted.",
+    message:
+      "Generated files may have changed, but the new generation state was not committed.",
+    suggestion:
+      "Review the written files and rerun preview before another apply attempt.",
+    fixable: false,
+  },
   FS_ROOT_NOT_FOUND: {
     code: "FS_ROOT_NOT_FOUND",
     severity: "error",

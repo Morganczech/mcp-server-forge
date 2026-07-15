@@ -23,7 +23,7 @@
 - [x] Implement bounded read-only filesystem inspection for target state,
       generation state, and template bundles.
 - [x] Implement the read-only `mcp-forge preview` CLI workflow.
-- [ ] Implement filesystem generation only after rendering and planning are
-      reviewed together.
+- [x] Implement filesystem generation through a pure Apply Contract, explicit
+      interactive confirmation, and a separately bounded executor.
 - [ ] Implement additional CLI commands after their underlying workflows exist.
 - [ ] Implement the forge MCP server.

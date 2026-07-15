@@ -5,6 +5,21 @@ All notable changes to `mcp-server-forge` are documented in this file.
 The project follows [Semantic Versioning](https://semver.org/) and uses
 pre-release identifiers while its public contracts are still evolving.
 
+## Unreleased
+
+### Added
+
+- pure versioned Apply Contract in `@mcp-server-forge/core`;
+- bounded filesystem execution with stale-target checks, atomic-per-file writes,
+  executable-mode handling, and generation state persisted last;
+- interactive `mcp-forge generate` workflow with no non-interactive bypass.
+
+### Security
+
+- unsafe plans, unconfirmed applications, symlinked paths, changed targets,
+  changed generation state, and standalone empty directories are rejected before
+  writes begin.
+
 ## [0.1.0-alpha.1] - 2026-07-14
 
 First public alpha release of MCP Server Forge.

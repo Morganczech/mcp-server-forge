@@ -73,7 +73,8 @@ identifies the owning area:
 - `TPL_`: template manifests, generated-file state, ownership, and planning.
 - `GEN_`: restricted in-memory template rendering and output validation.
 - `PLAN_`: render-to-plan consistency and read-only generation decisions.
-- `FS_`: bounded read-only filesystem inspection and root confinement.
+- `APPLY_`: pure Apply Contract validation and bounded execution failures.
+- `FS_`: bounded filesystem inspection and root confinement.
 
 Codes are independent of message wording. Renaming, rephrasing, or localizing a
 message does not change its code.
@@ -147,6 +148,12 @@ Stable `FS_` diagnostics cover explicit roots, confined portable paths,
 symlinks, regular-file reads, size limits, generation state, and template
 bundles. Their complete meanings and safety policy are listed in
 [filesystem-adapter.md](filesystem-adapter.md#diagnostics).
+
+Stable `APPLY_` diagnostics distinguish invalid or unsafe contracts, unsupported
+standalone directories, stale targets, generated-file write failures, and state
+write failures. Their execution semantics are documented in
+[apply-contract.md](apply-contract.md) and
+[filesystem-generation.md](filesystem-generation.md).
 
 ## Schema and semantic validation
 
