@@ -7,9 +7,11 @@ an explicit `y` or `yes` response on an interactive TTY:
 mcp-forge generate --template ./template --root ./project
 ```
 
-Options are `--config`, `--root`, `--template`, `--state`, `--show-skipped`, and
-`--allow-explicit-replace`. The template path is required. There is
-intentionally no `--yes`, JSON apply mode, or environment-variable confirmation.
+Options are `--config`, `--root`, `--template`, `--capability-root`, `--state`,
+`--show-skipped`, and `--allow-explicit-replace`. The template path is required;
+the capability root is additionally required when configuration selects local
+capabilities. There is intentionally no `--yes`, JSON apply mode, or
+environment-variable confirmation.
 
 After confirmation the command reloads configuration, template, targets, and
 state, reconstructs the preview and Apply Contract, and requires the refreshed

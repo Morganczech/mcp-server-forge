@@ -102,6 +102,14 @@ export function sanitizeInspection(
       ...(inspection.project.serverVersion === undefined
         ? {}
         : { serverVersion: safeUserText(inspection.project.serverVersion) }),
+      ...(inspection.project.capabilities === undefined
+        ? {}
+        : {
+            capabilities: inspection.project.capabilities.map(safeUserText),
+          }),
+      ...(inspection.project.tools === undefined
+        ? {}
+        : { tools: inspection.project.tools.map(safeUserText) }),
     },
     generation: { ...inspection.generation, files },
     permissions: inspection.permissions.map((permission) => ({

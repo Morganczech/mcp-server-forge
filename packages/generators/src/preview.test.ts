@@ -431,6 +431,8 @@ describe("orphaned and unmanaged files", () => {
     expect(preview.orphanedFiles).toEqual([
       expect.objectContaining({
         path: "old-generated.md",
+        ownership: "forge-owned",
+        updateStrategy: "replace-if-unmodified",
         modifiedSinceGeneration: false,
       }),
     ]);

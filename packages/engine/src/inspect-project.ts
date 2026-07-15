@@ -7,7 +7,7 @@ import {
   DEFAULT_GENERATION_STATE_PATH,
   loadGenerationState,
   loadTargetState,
-  loadTemplateBundle,
+  loadComposedTemplateBundle,
   type ForgeManagedTargetPath,
 } from "@mcp-server-forge/fs-adapter";
 import {
@@ -43,6 +43,11 @@ function permissionInputs(
         (value): value is string => typeof value === "string",
       )
     : [];
+  const allowedReadPaths = Array.isArray(security.allowedReadPaths)
+    ? security.allowedReadPaths.filter(
+        (value): value is string => typeof value === "string",
+      )
+    : [];
   const booleanPermission = (
     permission: "filesystem.write" | "filesystem.delete" | "shell",
     key: "fileWrite" | "fileDelete" | "shellAccess",
@@ -57,11 +62,13 @@ function permissionInputs(
   return [
     {
       permission: "filesystem.read",
-      declared: declared("allowedRootDirectories"),
-      allowed: allowedRoots.length > 0,
-      scope: allowedRoots,
+      declared:
+        declared("allowedRootDirectories") || declared("allowedReadPaths"),
+      allowed: allowedRoots.length > 0 || allowedReadPaths.length > 0,
+      scope: [...allowedRoots, ...allowedReadPaths],
       source,
-      description: "Filesystem roots declared for the generated server.",
+      description:
+        "Project-relative filesystem read scope declared for the generated server.",
     },
     booleanPermission(
       "filesystem.write",
@@ -158,15 +165,24 @@ export async function inspectForgeProject(
 
   let preview;
   let targetState;
+  let effectiveConfig = validation.data;
   const diagnostics = [...validation.diagnostics, ...state.diagnostics];
   if (request.templatePath !== undefined) {
-    const template = await loadTemplateBundle(request.templatePath);
+    const template = await loadComposedTemplateBundle(
+      request.templatePath,
+      request.capabilityRootPath,
+      validation.data,
+    );
     diagnostics.push(...template.diagnostics);
     if (template.success && template.bundle !== undefined) {
+      effectiveConfig = template.bundle.effectiveConfig;
       const render = renderForgeTemplate({
-        config: validation.data,
+        config: template.bundle.effectiveConfig,
         manifest: template.bundle.manifest,
         templateSources: template.bundle.templateSources,
+        ...(template.bundle.composition === undefined
+          ? {}
+          : { composition: template.bundle.composition }),
       });
       diagnostics.push(...render.diagnostics);
       const managed = new Map<string, ForgeManagedTargetPath>();
@@ -208,6 +224,28 @@ export async function inspectForgeProject(
   }
 
   const sortedDiagnostics = sortDiagnostics(diagnostics);
+  const rawConfig =
+    typeof request.configValue === "object" &&
+    request.configValue !== null &&
+    !Array.isArray(request.configValue)
+      ? (request.configValue as Record<string, unknown>)
+      : {};
+  const rawSecurity =
+    typeof rawConfig.security === "object" &&
+    rawConfig.security !== null &&
+    !Array.isArray(rawConfig.security)
+      ? (rawConfig.security as Record<string, unknown>)
+      : undefined;
+  const permissionConfig =
+    effectiveConfig.security.allowedReadPaths.length === 0
+      ? rawConfig
+      : {
+          ...rawConfig,
+          security: {
+            ...rawSecurity,
+            allowedReadPaths: effectiveConfig.security.allowedReadPaths,
+          },
+        };
   const baseInspection = createProjectInspection({
     project: {
       initialized: true,
@@ -215,6 +253,8 @@ export async function inspectForgeProject(
       title: validation.data.project.title,
       serverName: validation.data.server.name,
       serverVersion: validation.data.server.version,
+      capabilities: [...effectiveConfig.capabilities],
+      tools: effectiveConfig.tools.map(({ name }) => name).sort(compareAscii),
     },
     stateAvailable: state.available,
     ...(state.state === undefined
@@ -229,7 +269,7 @@ export async function inspectForgeProject(
     ...(preview !== undefined || targetState === undefined
       ? {}
       : { trackedFiles: trackedFiles(state.state, targetState) }),
-    permissions: permissionInputs(request.configValue),
+    permissions: permissionInputs(permissionConfig),
     diagnostics: sortedDiagnostics,
   });
   const ownershipByPath = new Map(

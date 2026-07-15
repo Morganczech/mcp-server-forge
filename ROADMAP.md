@@ -44,7 +44,22 @@ Broader clients and any mutating workflow remain outside this phase.
 The first functional template is implemented. It runs locally without network,
 filesystem, shell, environment, or secret access after dependencies are
 installed. It intentionally provides only one example tool; additional
-capabilities and production templates remain future work.
+production templates remain future work.
+
+## Phase 6 — Capability composition
+
+- Define strict local capability manifests and deterministic dependency order.
+- Compose compatible files, tools, exact dependencies, and permissions into the
+  existing renderer and generation pipeline.
+- Provide an offline contacts example with user-owned JSON data and bounded
+  read-only tools.
+- Expose composed facts through CLI inspection and the read-only Forge MCP
+  interface, with cross-platform end-to-end coverage.
+
+The local composition path is implemented. It rejects ambiguous or incompatible
+inputs before rendering, preserves capability data on regeneration or removal,
+and does not add a registry, download, purge, migration, or dynamic plugin
+execution mechanism.
 
 Dates and release commitments will be added after the configuration contract has
 been validated with representative examples.

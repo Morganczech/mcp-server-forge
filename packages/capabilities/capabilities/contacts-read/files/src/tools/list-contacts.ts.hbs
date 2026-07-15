@@ -1,0 +1,46 @@
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+import { compareContactIds, loadContacts, type Contact } from "../lib/load-contacts.js";
+
+export const MAX_CONTACT_PAGE_SIZE = 20;
+
+export function listContacts(
+  contacts: Contact[],
+  input: { limit: number; offset: number }
+): { contacts: Contact[]; total: number; limit: number; offset: number } {
+  const ordered = [...contacts].sort(compareContactIds);
+  return {
+    contacts: ordered.slice(input.offset, input.offset + input.limit),
+    total: ordered.length,
+    limit: input.limit,
+    offset: input.offset
+  };
+}
+
+export function registerListContactsTool(server: McpServer): void {
+  server.registerTool(
+    "list_contacts",
+    {
+      title: "List contacts",
+      description: "List a bounded page of local contacts in stable order.",
+      inputSchema: {
+        limit: z.number().int().min(1).max(MAX_CONTACT_PAGE_SIZE).default(20),
+        offset: z.number().int().min(0).max(1_000).default(0)
+      },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      }
+    },
+    async ({ limit, offset }) => {
+      const result = listContacts(await loadContacts(), { limit, offset });
+      return {
+        content: [{ type: "text", text: JSON.stringify(result) }],
+        structuredContent: result
+      };
+    }
+  );
+}

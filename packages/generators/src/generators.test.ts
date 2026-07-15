@@ -196,6 +196,22 @@ describe("full manifest rendering", () => {
     ).toMatchObject({ success: true, diagnostics: [] });
   });
 
+  it("rejects a capability dependency absent from the locked base template", () => {
+    const input = request("basic-typescript-server");
+    input.composition = {
+      capabilityIds: ["example"],
+      runtimeDependencies: { "unlocked-package": "1.0.0" },
+      developmentDependencies: {},
+      declaredTools: input.config.tools,
+      declaredAllowedReadPaths: [],
+    };
+
+    const result = renderForgeTemplate(input);
+
+    expect(result.success).toBe(false);
+    expect(codes(result)).toContain("CAP_DEPENDENCY_VERSION_CONFLICT");
+  });
+
   it("diagnoses a missing source and skips only its file", () => {
     const input = request("basic-typescript-server");
     delete input.templateSources["files/src/index.ts.hbs"];

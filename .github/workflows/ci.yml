@@ -63,3 +63,6 @@ jobs:
 
       - name: Verify functional MCP template
         run: pnpm test:template-smoke
+
+      - name: Verify capability composition
+        run: pnpm test:capability-smoke

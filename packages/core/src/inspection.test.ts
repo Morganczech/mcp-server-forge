@@ -77,6 +77,33 @@ describe("Forge engine inspection contracts", () => {
     );
   });
 
+  it("preserves ownership for orphaned generated files", () => {
+    const orphanedPreview = structuredClone(preview);
+    orphanedPreview.safeToApply = false;
+    orphanedPreview.orphanedFiles = [
+      {
+        path: "data/contacts.json",
+        ownership: "user-owned",
+        updateStrategy: "create-once",
+        previousGeneratedHash: "b".repeat(64),
+        targetExists: true,
+        modifiedSinceGeneration: true,
+      },
+    ];
+
+    const inspection = createProjectInspection({
+      project: { initialized: true },
+      stateAvailable: true,
+      preview: orphanedPreview,
+    });
+
+    expect(
+      inspection.generation.files.find(
+        ({ path }) => path === "data/contacts.json",
+      ),
+    ).toMatchObject({ status: "orphaned", ownership: "user-owned" });
+  });
+
   it("derives a stable change-plan identity without a boolean confirmation", () => {
     const first = createProjectChangePlan(preview, "2026-07-15T08:00:00.000Z");
     const second = createProjectChangePlan(preview, "2026-07-15T09:00:00.000Z");

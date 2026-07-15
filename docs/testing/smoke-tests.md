@@ -21,6 +21,10 @@ The smoke test verifies:
   project;
 - an official MCP client handshake, exact `hello` allowlist and tool call;
 - zero generated-server filesystem changes while running.
+- deterministic contacts capability composition, frozen generated-project
+  installation, and the exact four-tool runtime allowlist;
+- capability idempotency, forge-owned conflict protection, preserved user data,
+  orphan-safe removal, and composed evidence through read-only Forge MCP tools.
 
 It is not a release, package publication, exhaustive security audit, performance
 benchmark, or compatibility guarantee for every Node.js distribution. The
@@ -61,11 +65,21 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:template-smoke
+pnpm test:capability-smoke
 git diff --check
 ```
 
 Every command must exit with code `0`. The install must not update the lockfile,
 and `git status --short` must remain empty in a clean checkout.
+
+`test:capability-smoke` uses a temporary directory and always removes it. It
+composes the official `local-json-data` and `contacts-read` bundles, expects 18
+managed files, frozen-installs and builds the generated project, verifies
+`get_contact`, `hello`, `list_contacts`, and `search_contacts` with the official
+MCP client, and checks that runtime calls do not modify the filesystem. It also
+verifies a fully skipped second plan, conflict protection, user-owned data
+preservation, capability-removal orphan reporting, and the read-only Forge MCP
+inspection, permission, generated-file, and preview tools.
 
 The examples below use `./smoke-target`. Create it as a new empty directory in a
 clean checkout with a cross-platform Node.js command:

@@ -20,6 +20,7 @@ Options:
   --config <path>             Forge config relative to the CLI working directory
   --root <path>               Project root (default: current working directory)
   --template <path>           Optional template for a complete current preview
+  --capability-root <path>    Capability bundle root for composed projects
   --state <path>              State path inside root
   --json                      Emit structured JSON only
   --help                      Show this help
@@ -31,6 +32,7 @@ Options:
   --config <path>             Forge config relative to the CLI working directory
   --root <path>               Project root (default: current working directory)
   --template <path>           Optional template for preview information
+  --capability-root <path>    Capability bundle root for composed projects
   --state <path>              State path inside root
   --help                      Show this help
 
@@ -43,6 +45,7 @@ Options:
   --config <path>             Forge config relative to the CLI working directory
   --root <path>               Project root (default: current working directory)
   --template <path>           Explicit template directory (required)
+  --capability-root <path>    Capability bundle root for composed projects
   --state <path>              State path inside root
   --show-skipped              Include skipped files in the preview
   --allow-explicit-replace    Permit a confirmed whole-file replacement
@@ -65,6 +68,7 @@ Options:
   --config <path>             Forge config relative to the CLI working directory
   --root <path>               Project root (default: current working directory)
   --template <path>           Explicit template directory (required)
+  --capability-root <path>    Capability bundle root for composed projects
   --format <table|compact|detailed|json>
   --state <path>              State path inside root
   --no-state                  Ignore previous generation state

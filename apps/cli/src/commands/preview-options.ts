@@ -6,6 +6,7 @@ export interface PreviewCommandOptions {
   configPath: string;
   rootPath: string;
   templatePath: string;
+  capabilityRootPath?: string;
   format: PreviewOutputFormat;
   statePath: string;
   noState: boolean;
@@ -98,6 +99,7 @@ export function parsePreviewArguments(args: string[]): ParsedPreviewArguments {
       ["--config", "configPath"],
       ["--root", "rootPath"],
       ["--template", "templatePath"],
+      ["--capability-root", "capabilityRootPath"],
       ["--state", "statePath"],
       ["--format", "format"],
     ] as const;

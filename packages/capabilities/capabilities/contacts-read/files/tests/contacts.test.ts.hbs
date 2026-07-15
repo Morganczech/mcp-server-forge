@@ -1,0 +1,41 @@
+import { describe, expect, it } from "vitest";
+
+import { loadContacts } from "../src/lib/load-contacts.js";
+import { getContact } from "../src/tools/get-contact.js";
+import {
+  listContacts,
+  MAX_CONTACT_PAGE_SIZE
+} from "../src/tools/list-contacts.js";
+import {
+  MAX_CONTACT_SEARCH_RESULTS,
+  searchContacts
+} from "../src/tools/search-contacts.js";
+
+describe("read-only contacts tools", () => {
+  it("lists, searches, and gets fictional contacts deterministically", async () => {
+    const contacts = await loadContacts();
+
+    expect(listContacts(contacts, { limit: 1, offset: 0 })).toMatchObject({
+      total: 2,
+      contacts: [{ id: "contact-001", name: "Ada Příkladová" }]
+    });
+    expect(searchContacts(contacts, "  ADA  ").map(({ id }) => id)).toEqual([
+      "contact-001"
+    ]);
+    expect(searchContacts(contacts, "new").map(({ id }) => id)).toEqual([
+      "contact-002"
+    ]);
+    expect(getContact(contacts, "contact-002")?.email).toBe(
+      "boris.ukazkovy@example.test"
+    );
+    expect(getContact(contacts, "contact-999")).toBeUndefined();
+    expect(MAX_CONTACT_PAGE_SIZE).toBe(20);
+    expect(MAX_CONTACT_SEARCH_RESULTS).toBe(20);
+    expect(listContacts([], { limit: 20, offset: 0 })).toEqual({
+      contacts: [],
+      total: 0,
+      limit: 20,
+      offset: 0
+    });
+  });
+});

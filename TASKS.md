@@ -39,3 +39,10 @@
 - [x] Add cross-platform template generation, frozen installation, build,
       inspection, official MCP client handshake, idempotency, conflict, and
       zero-runtime-write smoke coverage.
+- [x] Add strict local capability manifests and a pure deterministic composition
+      resolver over the existing renderer and safe generation workflow.
+- [x] Add the `local-json-data` and `contacts-read` example capabilities with
+      preserved user-owned data and bounded read-only runtime tools.
+- [x] Cover composed generation, generated-project build and tests, official MCP
+      calls, read-only Forge inspection, idempotency, conflict, removal, and
+      zero-runtime-write behavior.

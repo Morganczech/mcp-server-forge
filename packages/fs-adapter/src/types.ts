@@ -8,6 +8,8 @@ import type {
   ForgeTemplateManifest,
 } from "@mcp-server-forge/templates";
 import type { ForgeDiagnostic } from "@mcp-server-forge/validators";
+import type { ForgeConfig } from "@mcp-server-forge/schemas";
+import type { ForgeRenderComposition } from "@mcp-server-forge/capabilities";
 
 export const DEFAULT_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
 export const DEFAULT_GENERATION_STATE_PATH = ".mcp-forge/generated-state.json";
@@ -46,6 +48,17 @@ export interface ForgeTemplateBundle {
 export interface ForgeTemplateBundleLoadResult {
   success: boolean;
   bundle?: ForgeTemplateBundle;
+  diagnostics: ForgeDiagnostic[];
+}
+
+export interface ForgeComposedTemplateBundle extends ForgeTemplateBundle {
+  effectiveConfig: ForgeConfig;
+  composition?: Omit<ForgeRenderComposition, "effectiveConfig">;
+}
+
+export interface ForgeComposedTemplateBundleLoadResult {
+  success: boolean;
+  bundle?: ForgeComposedTemplateBundle;
   diagnostics: ForgeDiagnostic[];
 }
 

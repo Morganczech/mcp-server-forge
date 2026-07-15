@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1",
+  "project": {
+    "name": "offline-contacts-server",
+    "title": "Offline Contacts Server",
+    "description": "A local read-only server over fictional sample contacts.",
+    "language": "en",
+    "license": "MIT"
+  },
+  "server": {
+    "name": "offline-contacts-server",
+    "version": "0.1.0",
+    "description": "read fictional local contacts without network access",
+    "runtime": "node",
+    "transport": "stdio",
+    "entrypoint": "dist/index.js",
+    "capabilities": {
+      "tools": true,
+      "resources": false,
+      "prompts": false
+    }
+  },
+  "capabilities": ["local-json-data", "contacts-read"],
+  "distribution": {
+    "type": "local-entrypoint",
+    "entrypoint": "dist/index.js"
+  },
+  "tools": [
+    {
+      "name": "hello",
+      "title": "Say hello",
+      "description": "Return a deterministic local greeting without side effects.",
+      "inputSchema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": { "name": { "type": "string", "maxLength": 80 } }
+      },
+      "outputSchema": {
+        "type": "object",
+        "required": ["message"],
+        "properties": { "message": { "type": "string", "maxLength": 96 } }
+      },
+      "useWhen": "A user wants to verify that the local MCP server is connected.",
+      "avoidWhen": "The request needs files, network access, shell commands, or business data.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false
+    }
+  ],
+  "environment": [],
+  "security": {
+    "allowedRootDirectories": [],
+    "allowedReadPaths": [],
+    "networkAccess": "none",
+    "shellAccess": false,
+    "fileWrite": false,
+    "fileDelete": false,
+    "requireConfirmation": false,
+    "maxResponseBytes": 65536,
+    "timeoutMs": 30000
+  }
+}

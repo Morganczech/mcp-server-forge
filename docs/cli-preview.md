@@ -26,6 +26,7 @@ mcp-forge preview --template <path> [options]
 | `--config <path>`                           | `./mcp-forge.json`                | Config relative to the CLI working directory.            |
 | `--root <path>`                             | CLI working directory             | Project root, made absolute before adapter use.          |
 | `--template <path>`                         | none                              | Required explicit template directory.                    |
+| `--capability-root <path>`                  | none                              | Explicit local root for selected capability bundles.     |
 | `--format <table\|compact\|detailed\|json>` | `table`                           | Output contract.                                         |
 | `--state <path>`                            | `.mcp-forge/generated-state.json` | Relative state path confined inside root.                |
 | `--no-state`                                | off                               | Ignore previous state without changing it.               |
@@ -45,6 +46,9 @@ mcp-forge preview \
   --root ./server-project \
   --template ./packages/templates/templates/basic-typescript-server
 ```
+
+If `mcp-forge.json` selects capabilities, omit `--capability-root` only to
+receive a closed failure; Forge never searches for bundles implicitly.
 
 ## Managed paths and state
 

@@ -91,6 +91,7 @@ function filesFromInspection(
       ...input.preview.orphanedFiles.map((file) => ({
         path: file.path,
         status: "orphaned" as const,
+        ...(file.ownership === undefined ? {} : { ownership: file.ownership }),
         reasonCode: "PLAN_ORPHANED_GENERATED_FILE",
       })),
     );
@@ -194,6 +195,13 @@ export function isForgeProjectInspection(
     optionalProjectStrings.some(
       (key) => project[key] !== undefined && typeof project[key] !== "string",
     )
+  ) {
+    return false;
+  }
+  if (
+    (project.capabilities !== undefined &&
+      !isStringArray(project.capabilities)) ||
+    (project.tools !== undefined && !isStringArray(project.tools))
   ) {
     return false;
   }

@@ -6,6 +6,7 @@ export interface ResolvedPreviewInputs {
   configPath: string;
   projectRoot: string;
   templatePath: string;
+  capabilityRootPath?: string;
   statePath: string;
 }
 
@@ -17,6 +18,9 @@ export function resolvePreviewInputs(
     configPath: resolve(cwd, options.configPath),
     projectRoot: resolve(cwd, options.rootPath),
     templatePath: resolve(cwd, options.templatePath),
+    ...(options.capabilityRootPath === undefined
+      ? {}
+      : { capabilityRootPath: resolve(cwd, options.capabilityRootPath) }),
     statePath: options.statePath,
   };
 }

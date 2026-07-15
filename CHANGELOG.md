@@ -9,6 +9,15 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Added
 
+- strict version-1 local capability manifests and a pure deterministic resolver
+  for dependencies, compatibility, files, tools, exact package versions, and
+  permission requirements;
+- `local-json-data` and `contacts-read` capabilities that compose a functional
+  offline contacts server with three bounded read-only tools and preserved
+  user-owned fictional data;
+- additive `capabilities` and `security.allowedReadPaths` configuration fields,
+  plus explicit `--capability-root` support for preview, generate, inspect, and
+  TUI workflows;
 - functional `basic-typescript-server` template that generates a standalone
   local stdio MCP server with one deterministic `hello` tool;
 - pinned standalone dependency lockfile, TypeScript and Vitest configuration,
@@ -27,6 +36,12 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Changed
 
+- read-only project inspection and Forge MCP evidence expose effective
+  capability IDs, public tools, exact read scope, and composed managed files
+  when a capability root is registered;
+- orphan inspection preserves the ownership recorded in generation state, and
+  capability dependency requirements must match the selected template's locked
+  packages instead of silently producing an inconsistent lockfile;
 - replace the four-file placeholder output with eleven purposeful project files
   and template version `1.1.0` while preserving manifest version 1 and workspace
   package versions;
@@ -37,6 +52,9 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Documentation
 
+- document template-versus-capability-versus-permission boundaries, the strict
+  composition contract, safe removal behavior, and a complete offline contacts
+  walkthrough;
 - document creating, installing, building, starting, connecting, inspecting, and
   modifying the first functional local template, including the distinction
   between local runtime, offline runtime, offline installation, and npm/npx
@@ -48,6 +66,8 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Security
 
+- bound contacts listing and search to at most 20 validated records per call so
+  maximum valid results remain below the configured response limit;
 - confine MCP project access to canonical registered roots and reject duplicate
   IDs, traversal, symlink escape, unsupported catalog fields, and unsafe paths;
 - revalidate registered project roots at use time and validate serialized
@@ -58,6 +78,13 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Testing
 
+- compose the contacts project through the real generation workflow, then
+  frozen-install, typecheck, test, build, call its exact four-tool allowlist
+  with the official MCP client, and verify zero runtime writes;
+- verify capability manifest failures and collisions, deterministic order,
+  idempotency, forge-owned conflict protection, user-data preservation,
+  orphan-safe removal, and composed facts through four read-only Forge MCP tools
+  on every CI operating system;
 - generate the functional template through the real Apply Contract and
   filesystem executor, then frozen-install, typecheck, test, build, inspect, and
   connect with the official MCP client on every CI operating system;
@@ -70,6 +97,10 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Known limitations
 
+- capabilities are reviewed local repository assets; there is no registry,
+  download, arbitrary plugin execution, uninstall, purge, or migration flow;
+- removing a capability preserves and reports orphaned files, so the unsafe plan
+  must be resolved manually and no data is deleted automatically;
 - the first functional template is a connectivity and learning example with one
   `hello` tool, not a production or business MCP server;
 - the TUI is a small terminal-only foundation and has no apply or configuration

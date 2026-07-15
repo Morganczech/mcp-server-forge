@@ -138,6 +138,9 @@ export async function collectProjectEvidence(
     ...(options.includeTemplate && project.templatePath !== undefined
       ? { templatePath: project.templatePath }
       : {}),
+    ...(options.includeTemplate && project.capabilityRootPath !== undefined
+      ? { capabilityRootPath: project.capabilityRootPath }
+      : {}),
     ...(options.observedAt === undefined
       ? {}
       : { observedAt: options.observedAt }),

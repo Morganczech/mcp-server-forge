@@ -25,6 +25,13 @@ const configFixture = new URL(
   "../../../packages/generators/fixtures/valid/basic-config.json",
   import.meta.url,
 );
+const contactsConfigFixture = new URL(
+  "../../../packages/generators/fixtures/valid/contacts-config.json",
+  import.meta.url,
+);
+const capabilityRoot = fileURLToPath(
+  new URL("../../../packages/capabilities/capabilities", import.meta.url),
+);
 
 let testRoot: string;
 let projectRoot: string;
@@ -47,11 +54,19 @@ async function capture(
   confirmed: boolean,
   interactive = true,
   onConfirm?: () => Promise<void>,
+  withCapabilities = false,
 ): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   let stdout = "";
   let stderr = "";
   const exitCode = await runCli(
-    ["generate", "--root", projectRoot, "--template", basicTemplate],
+    [
+      "generate",
+      "--root",
+      projectRoot,
+      "--template",
+      basicTemplate,
+      ...(withCapabilities ? ["--capability-root", capabilityRoot] : []),
+    ],
     {
       cwd: testRoot,
       stdout: { write: (chunk) => (stdout += chunk) },
@@ -82,6 +97,53 @@ async function listFiles(root: string, prefix = ""): Promise<string[]> {
 }
 
 describe("mcp-forge generate", () => {
+  it("reports an unknown capability without writing", async () => {
+    const config = JSON.parse(
+      await readFile(contactsConfigFixture, "utf8"),
+    ) as {
+      capabilities: string[];
+    };
+    config.capabilities = ["unknown-capability"];
+    await writeFile(join(testRoot, "mcp-forge.json"), JSON.stringify(config));
+
+    const result = await capture(true, true, undefined, true);
+
+    expect(result.exitCode).toBe(2);
+    expect(`${result.stdout}${result.stderr}`).toContain("CAP_UNKNOWN");
+    expect(await listFiles(projectRoot)).toEqual([]);
+  });
+
+  it("composes configured capabilities before applying one generation plan", async () => {
+    await writeFile(
+      join(testRoot, "mcp-forge.json"),
+      await readFile(contactsConfigFixture),
+    );
+
+    const result = await capture(true, true, undefined, true);
+    const generatedConfig = JSON.parse(
+      await readFile(join(projectRoot, "mcp-forge.json"), "utf8"),
+    ) as {
+      capabilities: string[];
+      tools: Array<{ name: string }>;
+      security: { allowedReadPaths: string[] };
+    };
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Applied 18 file change(s)");
+    expect(generatedConfig.capabilities).toEqual([
+      "local-json-data",
+      "contacts-read",
+    ]);
+    expect(generatedConfig.tools.map(({ name }) => name)).toEqual(["hello"]);
+    expect(generatedConfig.security.allowedReadPaths).toEqual([]);
+    await expect(
+      readFile(join(projectRoot, "src/tools/list-contacts.ts"), "utf8"),
+    ).resolves.toContain("registerListContactsTool");
+    await expect(
+      readFile(join(projectRoot, "data/contacts.json"), "utf8"),
+    ).resolves.toContain("Ada Příkladová");
+  });
+
   it("applies a fresh safe preview after explicit confirmation", async () => {
     const result = await capture(true);
 

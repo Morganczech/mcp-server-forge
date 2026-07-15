@@ -46,6 +46,11 @@ export async function inspectProject(
     ...(options.templatePath === undefined
       ? {}
       : { templatePath: resolve(context.cwd, options.templatePath) }),
+    ...(options.capabilityRootPath === undefined
+      ? {}
+      : {
+          capabilityRootPath: resolve(context.cwd, options.capabilityRootPath),
+        }),
   });
   return {
     inspection: result.inspection,
@@ -65,6 +70,8 @@ export function renderInspection(inspection: ForgeProjectInspection): string {
     "",
     `Project: ${inspection.project.title ?? inspection.project.name ?? "not initialized"}`,
     `Status: ${inspection.status}`,
+    `Capabilities: ${inspection.project.capabilities?.join(", ") || "none"}`,
+    `Tools: ${inspection.project.tools?.join(", ") || "none"}`,
     `Generation state: ${inspection.generation.stateAvailable ? "available" : "not available"}`,
     "",
     "Permissions (generated server configuration)",

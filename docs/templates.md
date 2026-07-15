@@ -6,6 +6,11 @@
 describe template outputs and plan safe future regeneration. It does not render
 content, inspect or write a filesystem, execute commands, or expose a CLI.
 
+A template is the complete base project. A capability is a separately validated
+local delta composed into one manifest before this existing pipeline runs. See
+[capabilities.md](capabilities.md); capability manifests do not change template
+manifest version 1.
+
 Template manifests and generation state are JSON-serializable data. Validation,
 hashing, sorting, and planning are separate public operations so generators and
 product interfaces can depend on the same deterministic rules later.

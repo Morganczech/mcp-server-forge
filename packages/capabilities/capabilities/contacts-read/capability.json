@@ -1,0 +1,111 @@
+{
+  "manifestVersion": "1",
+  "id": "contacts-read",
+  "version": "1.0.0",
+  "displayName": "Read contacts",
+  "description": "Adds bounded read-only contact listing, search, and lookup tools.",
+  "compatibleTemplates": ["basic-typescript-server"],
+  "requires": ["local-json-data"],
+  "conflictsWith": [],
+  "permissions": [
+    {
+      "permission": "filesystem.read",
+      "status": "allowed",
+      "scope": ["data/contacts.json"],
+      "description": "The server can read only its local contacts data file."
+    }
+  ],
+  "files": [
+    {
+      "path": "src/tools/list-contacts.ts",
+      "source": "files/src/tools/list-contacts.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "src/tools/search-contacts.ts",
+      "source": "files/src/tools/search-contacts.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "src/tools/get-contact.ts",
+      "source": "files/src/tools/get-contact.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "tests/contacts.test.ts",
+      "source": "files/tests/contacts.test.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    }
+  ],
+  "dependencies": {
+    "runtime": {
+      "@modelcontextprotocol/sdk": "1.29.0",
+      "zod": "3.25.76"
+    }
+  },
+  "tools": [
+    {
+      "name": "list_contacts",
+      "title": "List contacts",
+      "description": "List a bounded page of local contacts in stable order.",
+      "inputSchema": { "type": "object", "additionalProperties": false },
+      "outputSchema": { "type": "object" },
+      "useWhen": "A user wants to browse local contacts.",
+      "avoidWhen": "The user wants to modify contacts or access another file.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false,
+      "registration": {
+        "module": "src/tools/list-contacts.ts",
+        "export": "registerListContactsTool"
+      }
+    },
+    {
+      "name": "search_contacts",
+      "title": "Search contacts",
+      "description": "Search bounded local contact fields without regular expressions.",
+      "inputSchema": { "type": "object", "additionalProperties": false },
+      "outputSchema": { "type": "object" },
+      "useWhen": "A user knows part of a name, phone, email, or tag.",
+      "avoidWhen": "The request needs fuzzy matching or external directories.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false,
+      "registration": {
+        "module": "src/tools/search-contacts.ts",
+        "export": "registerSearchContactsTool"
+      }
+    },
+    {
+      "name": "get_contact",
+      "title": "Get contact",
+      "description": "Return one local contact by its bounded identifier.",
+      "inputSchema": { "type": "object", "additionalProperties": false },
+      "outputSchema": { "type": "object" },
+      "useWhen": "A user has an exact local contact ID.",
+      "avoidWhen": "The contact ID is unknown or data modification is requested.",
+      "riskLevel": "low",
+      "readOnly": true,
+      "destructive": false,
+      "requiresConfirmation": false,
+      "registration": {
+        "module": "src/tools/get-contact.ts",
+        "export": "registerGetContactTool"
+      }
+    }
+  ]
+}

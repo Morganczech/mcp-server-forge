@@ -21,6 +21,7 @@ export function validateRenderRequest(
     !isObject(input.config) ||
     !isObject(input.manifest) ||
     !isObject(input.templateSources) ||
+    (input.composition !== undefined && !isObject(input.composition)) ||
     (input.options !== undefined &&
       (!isObject(input.options) ||
         Object.keys(input.options).some(

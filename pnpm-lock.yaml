@@ -77,6 +77,21 @@ importers:
 
   examples/company-info: {}
 
+  packages/capabilities:
+    dependencies:
+      '@mcp-server-forge/schemas':
+        specifier: workspace:*
+        version: link:../schemas
+      '@mcp-server-forge/templates':
+        specifier: workspace:*
+        version: link:../templates
+      '@mcp-server-forge/validators':
+        specifier: workspace:*
+        version: link:../validators
+      zod:
+        specifier: 3.25.76
+        version: 3.25.76
+
   packages/core:
     dependencies:
       '@mcp-server-forge/generators':
@@ -109,12 +124,18 @@ importers:
 
   packages/fs-adapter:
     dependencies:
+      '@mcp-server-forge/capabilities':
+        specifier: workspace:*
+        version: link:../capabilities
       '@mcp-server-forge/core':
         specifier: workspace:*
         version: link:../core
       '@mcp-server-forge/generators':
         specifier: workspace:*
         version: link:../generators
+      '@mcp-server-forge/schemas':
+        specifier: workspace:*
+        version: link:../schemas
       '@mcp-server-forge/templates':
         specifier: workspace:*
         version: link:../templates

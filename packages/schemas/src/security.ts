@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { nonEmptyStringSchema } from "./common.js";
+import { nonEmptyStringSchema, relativePathSchema } from "./common.js";
 
 export const networkAccessSchema = z.enum([
   "none",
@@ -11,6 +11,7 @@ export const networkAccessSchema = z.enum([
 export const securitySchema = z
   .object({
     allowedRootDirectories: z.array(nonEmptyStringSchema).default([]),
+    allowedReadPaths: z.array(relativePathSchema).default([]),
     networkAccess: networkAccessSchema.default("none"),
     shellAccess: z.boolean().default(false),
     fileWrite: z.boolean().default(false),

@@ -220,15 +220,42 @@ describe("forgeConfigSchema cross-field validation", () => {
     const parsed = forgeConfigSchema.parse(minimalConfig);
 
     expect(parsed.clients).toEqual({});
+    expect(parsed.capabilities).toEqual([]);
     expect(parsed.knowledge.enabled).toBe(false);
     expect(parsed.security).toMatchObject({
       allowedRootDirectories: [],
+      allowedReadPaths: [],
       networkAccess: "none",
       shellAccess: false,
       fileWrite: false,
       fileDelete: false,
       requireConfirmation: true,
     });
+  });
+
+  it("accepts capability ids and confined read paths", () => {
+    const result = forgeConfigSchema.safeParse({
+      ...(minimalConfig as object),
+      capabilities: ["local-json-data", "contacts-read"],
+      security: { allowedReadPaths: ["data/contacts.json"] },
+    });
+
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects unsafe read paths", () => {
+    for (const path of [
+      "../contacts.json",
+      "/tmp/contacts.json",
+      "C:\\contacts.json",
+    ]) {
+      expect(
+        forgeConfigSchema.safeParse({
+          ...(minimalConfig as object),
+          security: { allowedReadPaths: [path] },
+        }).success,
+      ).toBe(false);
+    }
   });
 });
 

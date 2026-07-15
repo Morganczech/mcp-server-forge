@@ -468,6 +468,8 @@ export function findOrphanedGeneratedFiles(
           : undefined;
       return {
         path: previous.path,
+        ownership: previous.ownership,
+        updateStrategy: previous.updateStrategy,
         previousGeneratedHash: previous.generatedHash,
         targetExists,
         ...(target?.contentHash === undefined

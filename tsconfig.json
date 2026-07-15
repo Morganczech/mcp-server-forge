@@ -13,6 +13,9 @@
       "@mcp-server-forge/validators": ["./packages/validators/src/index.ts"],
       "@mcp-server-forge/importers": ["./packages/importers/src/index.ts"],
       "@mcp-server-forge/templates": ["./packages/templates/src/index.ts"],
+      "@mcp-server-forge/capabilities": [
+        "./packages/capabilities/src/index.ts"
+      ],
       "@mcp-server-forge/generators": ["./packages/generators/src/index.ts"],
       "@mcp-server-forge/core": ["./packages/core/src/index.ts"],
       "@mcp-server-forge/fs-adapter": ["./packages/fs-adapter/src/index.ts"],

@@ -10,16 +10,32 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
+import { forgeConfigSchema } from "@mcp-server-forge/schemas";
 import { hashGeneratedContent } from "@mcp-server-forge/templates";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
   inspectGenerationWorkspace,
+  loadComposedTemplateBundle,
   loadGenerationState,
   loadTargetState,
   loadTemplateBundle,
 } from "./index.js";
+
+const officialTemplate = fileURLToPath(
+  new URL("../../templates/templates/basic-typescript-server", import.meta.url),
+);
+const officialCapabilityRoot = fileURLToPath(
+  new URL("../../capabilities/capabilities", import.meta.url),
+);
+const contactsConfigFixture = fileURLToPath(
+  new URL(
+    "../../generators/fixtures/valid/contacts-config.json",
+    import.meta.url,
+  ),
+);
 
 const temporaryDirectories: string[] = [];
 
@@ -51,6 +67,64 @@ function generationState(files: unknown[] = []): object {
     files,
   };
 }
+
+async function contactsConfig() {
+  return forgeConfigSchema.parse(
+    JSON.parse(await readFile(contactsConfigFixture, "utf8")),
+  );
+}
+
+describe("loadComposedTemplateBundle", () => {
+  it("loads selected reviewed bundles into one deterministic template bundle", async () => {
+    const result = await loadComposedTemplateBundle(
+      officialTemplate,
+      officialCapabilityRoot,
+      await contactsConfig(),
+    );
+
+    expect(result.success).toBe(true);
+    expect(result.bundle?.composition?.capabilityIds).toEqual([
+      "local-json-data",
+      "contacts-read",
+    ]);
+    expect(result.bundle?.manifest.files.map(({ path }) => path)).toContain(
+      "data/contacts.json",
+    );
+    expect(
+      result.bundle?.effectiveConfig.tools.map(({ name }) => name),
+    ).toEqual(["get_contact", "hello", "list_contacts", "search_contacts"]);
+  });
+
+  it("fails closed when selected capabilities have no explicit root", async () => {
+    const result = await loadComposedTemplateBundle(
+      officialTemplate,
+      undefined,
+      await contactsConfig(),
+    );
+
+    expect(result.success).toBe(false);
+    expect(codes(result)).toContain("CAP_UNKNOWN");
+  });
+
+  it.skipIf(process.platform === "win32")(
+    "rejects capability directory symlinks",
+    async () => {
+      const root = await temporaryDirectory("capability-symlinks");
+      for (const id of ["local-json-data", "contacts-read"]) {
+        await symlink(join(officialCapabilityRoot, id), join(root, id));
+      }
+
+      const result = await loadComposedTemplateBundle(
+        officialTemplate,
+        root,
+        await contactsConfig(),
+      );
+
+      expect(result.success).toBe(false);
+      expect(codes(result)).toContain("FS_SYMLINK_REJECTED");
+    },
+  );
+});
 
 function manifest(source = "files/index.ts.hbs"): object {
   return {

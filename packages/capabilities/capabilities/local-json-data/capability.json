@@ -1,0 +1,50 @@
+{
+  "manifestVersion": "1",
+  "id": "local-json-data",
+  "version": "1.0.0",
+  "displayName": "Local JSON data",
+  "description": "Adds a bounded read-only local contacts data source.",
+  "compatibleTemplates": ["basic-typescript-server"],
+  "requires": [],
+  "conflictsWith": [],
+  "permissions": [
+    {
+      "permission": "filesystem.read",
+      "status": "allowed",
+      "scope": ["data/contacts.json"],
+      "description": "The server can read only its local contacts data file."
+    }
+  ],
+  "files": [
+    {
+      "path": "data/contacts.json",
+      "source": "files/data/contacts.json.hbs",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true,
+      "contentType": "application/json"
+    },
+    {
+      "path": "src/lib/load-contacts.ts",
+      "source": "files/src/lib/load-contacts.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    }
+  ],
+  "dependencies": {
+    "runtime": {
+      "zod": "3.25.76"
+    }
+  },
+  "tools": [],
+  "data": [
+    {
+      "path": "data/contacts.json",
+      "ownership": "user-owned",
+      "removal": "preserve",
+      "description": "Fictional sample contacts that the user may replace."
+    }
+  ]
+}

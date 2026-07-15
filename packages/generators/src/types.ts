@@ -37,6 +37,9 @@ export interface ForgeRenderContext {
     resources: boolean;
     prompts: boolean;
   };
+  composition: {
+    enabled: boolean;
+  };
   knowledge: {
     enabled: boolean;
   };
@@ -67,6 +70,13 @@ export interface ForgeRenderRequest {
   config: ForgeConfig;
   manifest: ForgeTemplateManifest;
   templateSources: Record<string, string>;
+  composition?: {
+    capabilityIds: string[];
+    runtimeDependencies: Record<string, string>;
+    developmentDependencies: Record<string, string>;
+    declaredTools: ForgeConfig["tools"];
+    declaredAllowedReadPaths: string[];
+  };
   options?: ForgeRenderOptions;
 }
 
@@ -200,6 +210,8 @@ export interface ForgePlannedFileResult {
 
 export interface ForgeOrphanedGeneratedFile {
   path: string;
+  ownership?: FileOwnership;
+  updateStrategy?: FileUpdateStrategy;
   previousGeneratedHash: string;
   targetExists: boolean;
   targetHash?: string;

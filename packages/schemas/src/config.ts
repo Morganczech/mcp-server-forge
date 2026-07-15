@@ -14,6 +14,11 @@ import { securitySchema } from "./security.js";
 import { serverSchema } from "./server.js";
 import { toolSchema } from "./tools.js";
 
+const capabilityIdSchema = z
+  .string()
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/u)
+  .max(64);
+
 function addDuplicateNameIssues(
   items: ReadonlyArray<{ name: string }>,
   path: string,
@@ -68,6 +73,7 @@ export const forgeConfigSchema = z
     schemaVersion: schemaVersionSchema,
     project: projectSchema,
     server: serverSchema,
+    capabilities: z.array(capabilityIdSchema).default([]),
     tools: z.array(toolSchema).default([]),
     resources: z.array(resourceSchema).default([]),
     resourceTemplates: z.array(resourceTemplateSchema).default([]),

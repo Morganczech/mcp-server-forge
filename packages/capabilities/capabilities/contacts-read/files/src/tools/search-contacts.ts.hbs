@@ -1,0 +1,43 @@
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+import { compareContactIds, loadContacts, type Contact } from "../lib/load-contacts.js";
+
+export const MAX_CONTACT_SEARCH_RESULTS = 20;
+
+export function searchContacts(contacts: Contact[], query: string): Contact[] {
+  const normalized = query.trim().toLocaleLowerCase("en-US");
+  return contacts
+    .filter((contact) =>
+      [contact.name, contact.phone, contact.email, ...contact.tags].some((value) =>
+        value.toLocaleLowerCase("en-US").includes(normalized)
+      )
+    )
+    .sort(compareContactIds)
+    .slice(0, MAX_CONTACT_SEARCH_RESULTS);
+}
+
+export function registerSearchContactsTool(server: McpServer): void {
+  server.registerTool(
+    "search_contacts",
+    {
+      title: "Search contacts",
+      description: "Search local names, phones, emails, and tags without regex.",
+      inputSchema: { query: z.string().trim().min(2).max(80) },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      }
+    },
+    async ({ query }) => {
+      const contacts = searchContacts(await loadContacts(), query);
+      const result = { contacts, total: contacts.length };
+      return {
+        content: [{ type: "text", text: JSON.stringify(result) }],
+        structuredContent: result
+      };
+    }
+  );
+}

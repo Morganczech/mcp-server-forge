@@ -7,8 +7,8 @@ open an experimental read-only terminal interface, and expose bounded project
 facts through a minimal read-only MCP server.
 
 The repository contains project infrastructure, validation/import contracts,
-template ownership rules, safe generation, and a first functional local MCP
-server template with one deterministic `hello` tool.
+template ownership rules, safe generation, one functional local MCP server
+template, and deterministic composition of reviewed local capabilities.
 
 ## Prerequisites
 
@@ -115,6 +115,17 @@ writes only from an interactive terminal and only after the answer `y` or `yes`:
 node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
+To generate the offline contacts example, select its local capability bundles
+explicitly:
+
+```bash
+node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/contacts-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server --capability-root ./packages/capabilities/capabilities
+```
+
+It adds bounded read-only `list_contacts`, `search_contacts`, and `get_contact`
+tools while preserving `data/contacts.json` as user-owned data. See the
+[capability guide](docs/capabilities.md).
+
 After confirming generation, install and run the standalone local server:
 
 ```bash
@@ -174,6 +185,7 @@ apps/
   cli/          Validation, inspection, TUI, preview, and generation workflows
   mcp-server/   Minimal read-only stdio interface to registered Forge projects
 packages/
+  capabilities/ Reviewed capability manifests, pure composition, and local assets
   core/         Pure inspection, change-plan, and apply contracts
   engine/       Shared read-only project inspection and preview orchestration
   schemas/      Zod schemas for configuration contracts
@@ -202,11 +214,12 @@ See [ROADMAP.md](ROADMAP.md), [TASKS.md](TASKS.md), and
 The current workspace version is `v0.1.0-alpha.2`. It supports configuration
 validation, safe import normalization, deterministic in-memory rendering,
 bounded filesystem inspection, complete read-only generation previews,
-structured project inspection, an experimental read-only TUI, and confirmed
-filesystem application. The separate Forge MCP interface exposes only read-only
-project facts. The `basic-typescript-server` template now produces a functional
-local stdio MCP server with one bounded, side-effect-free `hello` tool; it is a
-learning and connectivity template, not a business server.
+structured project inspection, an experimental read-only TUI, confirmed
+filesystem application, and deterministic local capability composition. The
+separate Forge MCP interface exposes only read-only project facts. The
+`basic-typescript-server` template produces a functional local stdio MCP server
+with one bounded `hello` tool; the optional contacts capabilities demonstrate
+bounded local JSON reads without turning the example into a production CRM.
 
 Public APIs and configuration formats may change during the alpha series. The
 first version of the configuration contract is documented in
@@ -226,6 +239,12 @@ See [docs/importers.md](docs/importers.md).
 generated-file ownership, SHA-256 generation state, and pure read-only change
 planning. It does not render or write template output. See
 [docs/templates.md](docs/templates.md).
+
+`@mcp-server-forge/capabilities` validates reviewed local capability manifests
+and resolves compatible files, exact dependencies, tools, and permission
+requirements into one composed template input. It performs no filesystem access
+or code execution. See [docs/capabilities.md](docs/capabilities.md) and the
+[composition architecture](docs/architecture/capability-composition.md).
 
 `@mcp-server-forge/generators` provides a restricted deterministic renderer and
 a complete read-only generation preview over abstract target and previous-state

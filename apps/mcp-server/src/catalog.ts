@@ -26,6 +26,7 @@ const catalogSchema = z
               .min(1)
               .default(".mcp-forge/generated-state.json"),
             templatePath: z.string().min(1).optional(),
+            capabilityRootPath: z.string().min(1).optional(),
           })
           .strict(),
       )
@@ -140,7 +141,9 @@ export async function loadProjectCatalog(
       !isPortableRelativePath(project.configPath) ||
       !isPortableRelativePath(project.statePath) ||
       (project.templatePath !== undefined &&
-        !isPortableRelativePath(project.templatePath))
+        !isPortableRelativePath(project.templatePath)) ||
+      (project.capabilityRootPath !== undefined &&
+        !isPortableRelativePath(project.capabilityRootPath))
     ) {
       return {
         status: "invalid",
@@ -187,6 +190,27 @@ export async function loadProjectCatalog(
         };
       }
     }
+    let capabilityRootPath: string | undefined;
+    if (project.capabilityRootPath !== undefined) {
+      capabilityRootPath = await canonicalDirectory(
+        resolve(root, project.capabilityRootPath),
+      );
+      if (
+        capabilityRootPath === undefined ||
+        !inside(root, capabilityRootPath)
+      ) {
+        return {
+          status: "invalid",
+          projects: [],
+          diagnostics: [
+            mcpDiagnostic(
+              "MCP_PROJECT_ACCESS_DENIED",
+              "A project capability root is missing or escapes its registered project root.",
+            ),
+          ],
+        };
+      }
+    }
     projects.push({
       projectId: project.projectId,
       label: project.label,
@@ -194,6 +218,7 @@ export async function loadProjectCatalog(
       configPath: project.configPath,
       statePath: project.statePath,
       ...(templatePath === undefined ? {} : { templatePath }),
+      ...(capabilityRootPath === undefined ? {} : { capabilityRootPath }),
     });
   }
 

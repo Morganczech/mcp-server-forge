@@ -1,0 +1,15 @@
+{
+  "name": "@mcp-server-forge/capabilities",
+  "version": "0.1.0-alpha.2",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "dependencies": {
+    "@mcp-server-forge/schemas": "workspace:*",
+    "@mcp-server-forge/templates": "workspace:*",
+    "@mcp-server-forge/validators": "workspace:*",
+    "zod": "3.25.76"
+  }
+}

@@ -18,6 +18,7 @@ export interface RegisteredForgeProject {
   configPath: string;
   statePath: string;
   templatePath?: string;
+  capabilityRootPath?: string;
 }
 
 export interface ForgeProjectCatalog {

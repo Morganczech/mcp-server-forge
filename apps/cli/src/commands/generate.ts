@@ -9,7 +9,7 @@ import {
   applyGenerationWorkspace,
   loadGenerationState,
   loadTargetState,
-  loadTemplateBundle,
+  loadComposedTemplateBundle,
   type ForgeManagedTargetPath,
 } from "@mcp-server-forge/fs-adapter";
 import {
@@ -87,6 +87,10 @@ async function prepareGeneration(
 ): Promise<PreparedGeneration | FailedPreparation> {
   const projectRoot = resolve(context.cwd, options.rootPath);
   const templatePath = resolve(context.cwd, options.templatePath);
+  const capabilityRootPath =
+    options.capabilityRootPath === undefined
+      ? undefined
+      : resolve(context.cwd, options.capabilityRootPath);
   const loadedConfig = await loadConfigFile(options.configPath, context.cwd);
   if (!loadedConfig.success) {
     return failure(
@@ -103,7 +107,11 @@ async function prepareGeneration(
       "Configuration validation failed.",
     );
   }
-  const template = await loadTemplateBundle(templatePath);
+  const template = await loadComposedTemplateBundle(
+    templatePath,
+    capabilityRootPath,
+    validation.data,
+  );
   if (!template.success || template.bundle === undefined) {
     return failure(
       CLI_EXIT_CODES.fileError,
@@ -116,9 +124,12 @@ async function prepareGeneration(
     version: template.bundle.manifest.template.version,
   };
   const renderResult = renderForgeTemplate({
-    config: validation.data,
+    config: template.bundle.effectiveConfig,
     manifest: template.bundle.manifest,
     templateSources: template.bundle.templateSources,
+    ...(template.bundle.composition === undefined
+      ? {}
+      : { composition: template.bundle.composition }),
     options: { includeConditionSkipDiagnostics: options.showSkipped },
   });
   if (!renderResult.success || hasErrors(renderResult.diagnostics)) {

@@ -3,6 +3,9 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 import { createHelloResult, MAX_HELLO_NAME_LENGTH } from "./tools/hello.js";
+{{#if composition.enabled}}
+import { registerCapabilityTools } from "./capabilities.js";
+{{/if}}
 
 const server = new McpServer({
   name: {{json server.name}},
@@ -35,5 +38,9 @@ server.registerTool(
     };
   }
 );
+
+{{#if composition.enabled}}
+registerCapabilityTools(server);
+{{/if}}
 
 await server.connect(new StdioServerTransport());

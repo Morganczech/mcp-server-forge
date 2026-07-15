@@ -29,3 +29,10 @@ The first
 generates a standalone stdio server with one bounded `hello` tool. Its runtime
 is offline and side-effect free after dependencies are installed; it is not an
 npm/npx distribution or a general-purpose business server.
+
+Phase 6 [capability composition](capabilities.md) adds reviewed local deltas to
+that base template through one deterministic generation pipeline. The
+[architecture decision](architecture/capability-composition.md) defines the
+package and safety boundaries, and the
+[offline contacts example](examples/offline-contacts-server.md) shows the first
+functional composed server.

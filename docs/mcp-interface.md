@@ -30,16 +30,19 @@ accept a `projectId`, never a filesystem path.
       "root": "./projects/salon-assistant",
       "configPath": "mcp-forge.json",
       "statePath": ".mcp-forge/generated-state.json",
-      "templatePath": "template"
+      "templatePath": "template",
+      "capabilityRootPath": "capabilities"
     }
   ]
 }
 ```
 
 Paths in `allowedRoots` and `root` are resolved relative to the catalog file.
-`configPath`, `statePath`, and optional `templatePath` must be portable paths
-relative to the registered project root. The referenced roots, project
-directories, and templates must already exist.
+`configPath`, `statePath`, optional `templatePath`, and optional
+`capabilityRootPath` must be portable paths relative to the registered project
+root. The referenced roots, project directories, templates, and capability roots
+must already exist. A project selecting capabilities needs both optional paths
+for effective composed inspection and preview.
 
 Catalog loading canonicalizes directories and rejects invalid or duplicate
 project IDs, missing objects, traversal, unsupported catalog fields, and symlink
@@ -104,7 +107,7 @@ The server registers exactly these tools:
 | ---------------------------- | ------------------------------------------------------------------------ |
 | `forge_get_status`           | Server version, catalog status, project count, and available features.   |
 | `forge_list_projects`        | Bounded page of registered project summaries without absolute paths.     |
-| `forge_inspect_project`      | Structured facts based on `ForgeProjectInspection`.                      |
+| `forge_inspect_project`      | Structured facts, including composed capabilities and tools.             |
 | `forge_get_permissions`      | Technical and plain-language generated-server permission declarations.   |
 | `forge_list_generated_files` | Bounded tracked-file metadata without file contents.                     |
 | `forge_preview_project`      | Fresh inspection and `ForgeProjectChangePlan` from the existing planner. |
@@ -199,10 +202,19 @@ eleven tracked files, denied filesystem/network/shell permissions, and an
 idempotent fresh preview. This does not expose the generated server's `hello`
 tool through Forge; the local generated server is a separate MCP process.
 
+For a composed contacts project, register the corresponding local template and
+capability root. Inspection and permission tools then report two capability IDs,
+the exact four generated-server tool names, `data/contacts.json` as the only
+allowed read scope, and 18 managed files. Forge reports those facts but does not
+proxy or call the generated contacts tools; that server remains a separate MCP
+process.
+
 ## Known limitations
 
 - The catalog is edited manually outside MCP and is loaded only at startup.
 - Templates must be explicitly registered inside the corresponding project.
+- Capability roots are explicit local reviewed assets; there is no discovery,
+  registry, download, installation, or dynamic plugin execution.
 - The generated basic TypeScript server is functional but intentionally limited
   to one example `hello` tool; it is not a production-ready business server.
 - There is no authentication layer beyond local process and filesystem access;

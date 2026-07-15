@@ -4,6 +4,7 @@ export interface InspectCommandOptions {
   configPath: string;
   rootPath: string;
   templatePath?: string;
+  capabilityRootPath?: string;
   statePath: string;
   json: boolean;
 }
@@ -30,6 +31,7 @@ export function parseInspectArguments(args: string[]): ParsedInspectArguments {
       ["--config", "configPath"],
       ["--root", "rootPath"],
       ["--template", "templatePath"],
+      ["--capability-root", "capabilityRootPath"],
       ["--state", "statePath"],
     ] as const) {
       if (argument !== name && !argument?.startsWith(`${name}=`)) continue;

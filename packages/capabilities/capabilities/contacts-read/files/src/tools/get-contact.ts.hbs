@@ -1,0 +1,40 @@
+import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
+
+import { loadContacts, type Contact } from "../lib/load-contacts.js";
+
+export function getContact(contacts: Contact[], id: string): Contact | undefined {
+  return contacts.find((contact) => contact.id === id);
+}
+
+export function registerGetContactTool(server: McpServer): void {
+  server.registerTool(
+    "get_contact",
+    {
+      title: "Get contact",
+      description: "Return one local contact by its exact bounded ID.",
+      inputSchema: { id: z.string().regex(/^contact-[a-z0-9-]{1,48}$/u) },
+      annotations: {
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false
+      }
+    },
+    async ({ id }) => {
+      const contact = getContact(await loadContacts(), id);
+      if (contact === undefined) {
+        const error = { code: "CONTACT_NOT_FOUND", id };
+        return {
+          isError: true,
+          content: [{ type: "text", text: "The local contact was not found." }],
+          structuredContent: { error }
+        };
+      }
+      return {
+        content: [{ type: "text", text: JSON.stringify(contact) }],
+        structuredContent: { contact }
+      };
+    }
+  );
+}

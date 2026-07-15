@@ -124,6 +124,8 @@ export interface ForgeProjectInspection {
     title?: string;
     serverName?: string;
     serverVersion?: string;
+    capabilities?: string[];
+    tools?: string[];
   };
   status: ForgeProjectStatus;
   generation: {

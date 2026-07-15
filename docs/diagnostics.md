@@ -75,6 +75,7 @@ identifies the owning area:
 - `PLAN_`: render-to-plan consistency and read-only generation decisions.
 - `APPLY_`: pure Apply Contract validation and bounded execution failures.
 - `FS_`: bounded filesystem inspection and root confinement.
+- `CAP_`: strict capability manifests and deterministic composition.
 
 Codes are independent of message wording. Renaming, rephrasing, or localizing a
 message does not change its code.
@@ -148,6 +149,25 @@ Stable `FS_` diagnostics cover explicit roots, confined portable paths,
 symlinks, regular-file reads, size limits, generation state, and template
 bundles. Their complete meanings and safety policy are listed in
 [filesystem-adapter.md](filesystem-adapter.md#diagnostics).
+
+Stable `CAP_` diagnostics fail composition before rendering:
+
+| Code                               | Meaning                                                        |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `CAP_MANIFEST_VERSION_UNSUPPORTED` | Capability manifest version is not supported.                  |
+| `CAP_MANIFEST_INVALID`             | Manifest shape, path, version, or declaration is invalid.      |
+| `CAP_UNKNOWN`                      | A selected local capability bundle cannot be loaded.           |
+| `CAP_DUPLICATE`                    | Configuration selects one capability more than once.           |
+| `CAP_DEPENDENCY_MISSING`           | A required capability was not selected.                        |
+| `CAP_DEPENDENCY_CYCLE`             | Selected capability requirements contain a cycle.              |
+| `CAP_CONFLICT`                     | Two selected capabilities explicitly conflict.                 |
+| `CAP_TEMPLATE_INCOMPATIBLE`        | Capability does not allow the selected base template.          |
+| `CAP_FILE_COLLISION`               | Two composition inputs claim the same output path.             |
+| `CAP_TOOL_COLLISION`               | Two composition inputs claim the same public tool name.        |
+| `CAP_DEPENDENCY_VERSION_CONFLICT`  | A package is absent from the locked base or versions disagree. |
+| `CAP_PERMISSION_CONFLICT`          | Permission requirements for one kind disagree.                 |
+
+See [capabilities.md](capabilities.md) for safe user-facing resolution steps.
 
 Stable `APPLY_` diagnostics distinguish invalid or unsafe contracts, unsupported
 standalone directories, stale targets, generated-file write failures, and state

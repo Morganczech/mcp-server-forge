@@ -30,6 +30,7 @@ optional fields within version 1.
 | `schemaVersion`     | required          | Selects this contract; must equal `"1"`.      |
 | `project`           | required          | Human-facing project metadata.                |
 | `server`            | required          | MCP runtime and capability declaration.       |
+| `capabilities`      | optional          | Ordered local capability IDs; defaults `[]`.  |
 | `tools`             | optional          | Tool definitions; defaults to `[]`.           |
 | `resources`         | optional          | Static resource definitions; defaults `[]`.   |
 | `resourceTemplates` | optional          | URI template definitions; defaults to `[]`.   |
@@ -44,6 +45,11 @@ optional fields within version 1.
 
 Fields described as optional may still appear in the parsed result because the
 schema applies safe defaults.
+
+`capabilities` contains unique lowercase kebab-case IDs. IDs select reviewed
+bundles from an operator-supplied capability root during preview, generation, or
+full inspection. The schema does not discover, download, or execute bundles.
+Dependencies between selected IDs are validated by the capability resolver.
 
 ## Project
 
@@ -233,6 +239,7 @@ The optional `security` section defaults to a deny-oriented posture:
 ```json
 {
   "allowedRootDirectories": [],
+  "allowedReadPaths": [],
   "networkAccess": "none",
   "shellAccess": false,
   "fileWrite": false,
@@ -243,9 +250,13 @@ The optional `security` section defaults to a deny-oriented posture:
 }
 ```
 
-`networkAccess` is `none`, `restricted`, or `unrestricted`. Size and timeout
-limits must be positive integers. These values declare intended policy; v1 does
-not enforce permissions at runtime.
+`allowedReadPaths` contains portable project-relative file paths and defaults to
+an empty list. Capability composition can derive an effective read scope for
+inspection and generated runtime code without copying that derived scope back
+into the source configuration. `networkAccess` is `none`, `restricted`, or
+`unrestricted`. Size and timeout limits must be positive integers. These values
+declare intended policy; generic v1 validation does not enforce permissions at
+runtime. The implemented contacts loader separately enforces its exact path.
 
 ## Registry metadata
 

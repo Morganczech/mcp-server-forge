@@ -1,7 +1,7 @@
 import {
   loadGenerationState,
   loadTargetState,
-  loadTemplateBundle,
+  loadComposedTemplateBundle,
   type ForgeGenerationStateLoadResult,
   type ForgeManagedTargetPath,
 } from "@mcp-server-forge/fs-adapter";
@@ -103,7 +103,11 @@ export async function runPreviewCommand(
     });
   }
 
-  const template = await loadTemplateBundle(inputs.templatePath);
+  const template = await loadComposedTemplateBundle(
+    inputs.templatePath,
+    inputs.capabilityRootPath,
+    validation.data,
+  );
   if (!template.success || template.bundle === undefined) {
     return failure(CLI_EXIT_CODES.fileError, {
       diagnostics: template.diagnostics,
@@ -116,9 +120,12 @@ export async function runPreviewCommand(
   };
 
   const renderResult = renderForgeTemplate({
-    config: validation.data,
+    config: template.bundle.effectiveConfig,
     manifest: template.bundle.manifest,
     templateSources: template.bundle.templateSources,
+    ...(template.bundle.composition === undefined
+      ? {}
+      : { composition: template.bundle.composition }),
     options: {
       includeConditionSkipDiagnostics: options.showSkipped,
     },

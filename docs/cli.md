@@ -60,6 +60,10 @@ node apps/cli/dist/index.js validate ./mcp-forge.json
 The package reserves the future executable name `mcp-forge`. It is private and
 is not published yet.
 
+When configuration selects local capabilities, `preview`, `generate`, `inspect`,
+and `tui` also require `--capability-root <path>`. The root is an explicit
+reviewed bundle directory, not a registry or plugin search path.
+
 ## Functional basic template
 
 The repository's `basic-typescript-server` template produces a standalone
@@ -85,6 +89,15 @@ It needs no `npx`, npm account, environment variables, or network at runtime. A
 clean first installation is not guaranteed offline: pnpm needs registry access
 unless all pinned packages are already present in its local store. See the
 [template guide](templates/basic-typescript-server.md).
+
+## Composed offline contacts example
+
+```bash
+node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/contacts-config.json --root ./contacts-target --template ./packages/templates/templates/basic-typescript-server --capability-root ./packages/capabilities/capabilities
+```
+
+This uses the same preview, confirmation, Apply Contract, state, and filesystem
+executor as the base template. See [capabilities.md](capabilities.md).
 
 ## Validate command
 
@@ -269,7 +282,7 @@ The version is read from local package metadata without network access.
 
 ```text
 mcp-forge inspect [--config <path>] [--root <path>] [--template <path>]
-                  [--state <path>] [--json]
+                  [--capability-root <path>] [--state <path>] [--json]
 ```
 
 Text is intended for people. `--json` writes exactly one versioned Project
@@ -281,7 +294,8 @@ exits 0.
 
 Without `--template`, tracked files are compared with saved generation hashes.
 With a template, inspect renders and adapts the same authoritative plan used by
-`preview`; it does not maintain a separate planner.
+`preview`; it does not maintain a separate planner. A configured capability set
+is resolved only when both the template and capability root are supplied.
 
 Inspection permission rows describe the generated server configuration.
 `not-declared` means the relevant key was absent from the source configuration;
@@ -292,7 +306,7 @@ secret values are included.
 
 ```text
 mcp-forge tui [--config <path>] [--root <path>] [--template <path>]
-              [--state <path>]
+              [--capability-root <path>] [--state <path>]
 ```
 
 Keys `1` through `4` open overview, permissions, generated files, and

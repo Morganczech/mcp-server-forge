@@ -82,6 +82,92 @@ function renderFile(
   };
 }
 
+function composeJsonOutputs(
+  files: ForgeRenderedFile[],
+  request: ForgeRenderRequest,
+  diagnostics: ForgeDiagnostic[],
+): void {
+  if (request.composition === undefined) return;
+  for (const file of files) {
+    if (file.path !== "package.json" && file.path !== "mcp-forge.json")
+      continue;
+    try {
+      const value = JSON.parse(file.content) as Record<string, unknown>;
+      if (file.path === "package.json") {
+        const dependencies = {
+          ...((value.dependencies as Record<string, string> | undefined) ?? {}),
+        };
+        const developmentDependencies = {
+          ...((value.devDependencies as Record<string, string> | undefined) ??
+            {}),
+        };
+        for (const [name, version] of Object.entries(
+          request.composition.runtimeDependencies,
+        )) {
+          if (
+            dependencies[name] === undefined ||
+            dependencies[name] !== version
+          ) {
+            diagnostics.push(
+              createDiagnostic("CAP_DEPENDENCY_VERSION_CONFLICT", [
+                file.path,
+                "dependencies",
+                name,
+              ]),
+            );
+          }
+          dependencies[name] = version;
+        }
+        for (const [name, version] of Object.entries(
+          request.composition.developmentDependencies,
+        )) {
+          if (
+            developmentDependencies[name] === undefined ||
+            developmentDependencies[name] !== version
+          ) {
+            diagnostics.push(
+              createDiagnostic("CAP_DEPENDENCY_VERSION_CONFLICT", [
+                file.path,
+                "devDependencies",
+                name,
+              ]),
+            );
+          }
+          developmentDependencies[name] = version;
+        }
+        value.dependencies = Object.fromEntries(
+          Object.entries(dependencies).sort(([left], [right]) =>
+            compareAscii(left, right),
+          ),
+        );
+        value.devDependencies = Object.fromEntries(
+          Object.entries(developmentDependencies).sort(([left], [right]) =>
+            compareAscii(left, right),
+          ),
+        );
+      } else {
+        value.capabilities = [...request.composition.capabilityIds];
+        value.tools = request.composition.declaredTools;
+        const security =
+          (value.security as Record<string, unknown> | undefined) ?? {};
+        value.security = {
+          ...security,
+          allowedReadPaths: [...request.composition.declaredAllowedReadPaths],
+        };
+      }
+      file.content = normalizeRenderedContent(
+        `${JSON.stringify(value, null, 2)}\n`,
+        "application/json",
+      );
+      file.contentHash = hashGeneratedContent(file.content);
+    } catch {
+      diagnostics.push(
+        createDiagnostic("GEN_OUTPUT_CONTENT_INVALID", [file.path]),
+      );
+    }
+  }
+}
+
 export function renderForgeTemplate(
   request: ForgeRenderRequest,
 ): ForgeRenderResult {
@@ -197,6 +283,8 @@ export function renderForgeTemplate(
     }
     seenPaths.add(file.path);
   }
+
+  composeJsonOutputs(files, request, diagnostics);
 
   files.sort((left, right) => compareAscii(left.path, right.path));
   const sortedDiagnostics = sortDiagnostics(diagnostics);

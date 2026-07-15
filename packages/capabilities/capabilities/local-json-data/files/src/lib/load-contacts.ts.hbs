@@ -1,0 +1,105 @@
+import { lstat, readFile, realpath } from "node:fs/promises";
+import { relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+import { z } from "zod";
+
+export const MAX_CONTACT_DATA_BYTES = 65_536;
+export const MAX_CONTACTS = 1_000;
+
+const contactSchema = z
+  .object({
+    id: z.string().regex(/^contact-[a-z0-9-]{1,48}$/u),
+    name: z.string().trim().min(1).max(120),
+    phone: z.string().trim().min(1).max(40),
+    email: z.string().trim().email().max(254),
+    tags: z.array(z.string().trim().min(1).max(40)).max(20),
+    notes: z.string().trim().max(500)
+  })
+  .strict();
+const contactsSchema = z.array(contactSchema).max(MAX_CONTACTS);
+
+export type Contact = z.infer<typeof contactSchema>;
+
+export function compareContactIds(left: Contact, right: Contact): number {
+  return left.id < right.id ? -1 : left.id > right.id ? 1 : 0;
+}
+
+export class ContactDataError extends Error {
+  constructor(
+    readonly code:
+      | "CONTACT_DATA_UNSAFE"
+      | "CONTACT_DATA_TOO_LARGE"
+      | "CONTACT_DATA_INVALID"
+      | "CONTACT_DATA_READ_FAILED",
+    message: string
+  ) {
+    super(message);
+    this.name = "ContactDataError";
+  }
+}
+
+function inside(root: string, target: string): boolean {
+  const path = relative(root, target);
+  return path === "" || (!path.startsWith("..") && !path.startsWith("/"));
+}
+
+export async function loadContacts(): Promise<Contact[]> {
+  const projectRoot = fileURLToPath(new URL("../../", import.meta.url));
+  const dataDirectory = resolve(projectRoot, "data");
+  const contactsPath = resolve(dataDirectory, "contacts.json");
+  try {
+    const directoryMetadata = await lstat(dataDirectory);
+    const fileMetadata = await lstat(contactsPath);
+    if (
+      directoryMetadata.isSymbolicLink() ||
+      !directoryMetadata.isDirectory() ||
+      fileMetadata.isSymbolicLink() ||
+      !fileMetadata.isFile()
+    ) {
+      throw new ContactDataError(
+        "CONTACT_DATA_UNSAFE",
+        "The contacts data path must be a regular non-symlink file."
+      );
+    }
+    if (fileMetadata.size > MAX_CONTACT_DATA_BYTES) {
+      throw new ContactDataError(
+        "CONTACT_DATA_TOO_LARGE",
+        "The contacts data file exceeds the safe size limit."
+      );
+    }
+    const [canonicalRoot, canonicalFile] = await Promise.all([
+      realpath(projectRoot),
+      realpath(contactsPath)
+    ]);
+    if (!inside(canonicalRoot, canonicalFile)) {
+      throw new ContactDataError(
+        "CONTACT_DATA_UNSAFE",
+        "The contacts data path escapes the local project."
+      );
+    }
+    const parsed = contactsSchema.safeParse(
+      JSON.parse(await readFile(contactsPath, "utf8"))
+    );
+    if (!parsed.success) {
+      throw new ContactDataError(
+        "CONTACT_DATA_INVALID",
+        "The contacts data file does not match the bounded schema."
+      );
+    }
+    const ids = new Set<string>();
+    if (parsed.data.some(({ id }) => (ids.has(id) ? true : !ids.add(id)))) {
+      throw new ContactDataError(
+        "CONTACT_DATA_INVALID",
+        "Contact IDs must be unique."
+      );
+    }
+    return parsed.data.sort(compareContactIds);
+  } catch (error) {
+    if (error instanceof ContactDataError) throw error;
+    throw new ContactDataError(
+      "CONTACT_DATA_READ_FAILED",
+      "The contacts data file could not be read safely."
+    );
+  }
+}

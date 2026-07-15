@@ -7,6 +7,7 @@ export interface ForgeReadOnlyProjectRequest {
   projectRoot: string;
   configValue: Record<string, unknown>;
   templatePath?: string;
+  capabilityRootPath?: string;
   statePath?: string;
   observedAt?: string;
 }

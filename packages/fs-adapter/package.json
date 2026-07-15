@@ -7,8 +7,10 @@
     ".": "./dist/index.js"
   },
   "dependencies": {
+    "@mcp-server-forge/capabilities": "workspace:*",
     "@mcp-server-forge/core": "workspace:*",
     "@mcp-server-forge/generators": "workspace:*",
+    "@mcp-server-forge/schemas": "workspace:*",
     "@mcp-server-forge/templates": "workspace:*",
     "@mcp-server-forge/validators": "workspace:*"
   }

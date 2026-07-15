@@ -4,6 +4,7 @@ export interface GenerateCommandOptions {
   configPath: string;
   rootPath: string;
   templatePath: string;
+  capabilityRootPath?: string;
   statePath: string;
   showSkipped: boolean;
   allowExplicitReplace: boolean;
@@ -58,6 +59,7 @@ export function parseGenerateArguments(
       ["--config", "configPath"],
       ["--root", "rootPath"],
       ["--template", "templatePath"],
+      ["--capability-root", "capabilityRootPath"],
       ["--state", "statePath"],
     ] as const) {
       const parsed = valueAt(args, index, name);

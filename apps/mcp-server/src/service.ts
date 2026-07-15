@@ -215,7 +215,7 @@ export class ForgeReadOnlyService {
       );
     }
     const result = await collectProjectEvidence(project, {
-      includeTemplate: false,
+      includeTemplate: project.templatePath !== undefined,
     });
     if (!result.success) {
       return errorEnvelope(
