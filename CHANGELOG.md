@@ -13,24 +13,51 @@ pre-release identifiers while its public contracts are still evolving.
   Project Change Plan contracts;
 - read-only `mcp-forge inspect` text and JSON output for project health,
   generation state, managed files, permissions, and diagnostics;
-- experimental read-only `mcp-forge tui` screens for interactive inspection.
+- experimental read-only `mcp-forge tui` screens for interactive inspection;
+- shared read-only application orchestration for CLI and MCP project inspection
+  and preview;
+- minimal stdio Forge MCP server with an explicit project catalog and seven
+  allowlisted read-only tools for status, projects, inspection, permissions,
+  tracked files, preview, and diagnostic explanations.
 
 ### Changed
 
 - interactive generation confirmations are bound to the displayed deterministic
-  plan identity before the existing fresh-preview and Apply Contract checks.
+  plan identity before the existing fresh-preview and Apply Contract checks;
+- tracked-file inspection preserves ownership metadata already recorded in
+  generation state.
 
 ### Documentation
 
 - document the reusable engine boundary, terminal client isolation, command
-  usage, and current non-goals.
+  usage, and current non-goals;
+- document MCP catalog setup, client configuration, response bounds, trust
+  boundaries, and the exact unsupported write operations.
+
+### Security
+
+- confine MCP project access to canonical registered roots and reject duplicate
+  IDs, traversal, symlink escape, unsupported catalog fields, and unsafe paths;
+- revalidate registered project roots at use time and validate serialized
+  Project Inspection and Change Plan contracts before returning them;
+- bound MCP catalog, configuration, pagination, diagnostic, user-text, and
+  response sizes while hiding absolute permission paths and redacting common
+  credential, authorization, cookie, connection-string, and private-key shapes.
+
+### Testing
+
+- cover catalog and path boundaries, all seven read-only services, pagination,
+  redaction, response limits, deterministic summaries, zero writes, and an
+  official MCP client/server transport integration.
 
 ### Known limitations
 
 - the TUI is a small terminal-only foundation and has no apply or configuration
   editing actions;
 - a remote engine API, approval tokens, desktop, web, editor, and MCP clients
-  remain future work.
+  beyond the local stdio interface remain future work;
+- the MCP catalog is manual and startup-only, and no MCP tool can apply or
+  approve a plan.
 
 ## [0.1.0-alpha.2] - 2026-07-15
 

@@ -3,8 +3,8 @@
 `mcp-server-forge` is an early-stage toolkit for designing, generating,
 validating, and documenting standard Model Context Protocol (MCP) servers. Its
 CLI can validate, inspect, preview, interactively apply a safe generation plan,
-and open an experimental read-only terminal interface; an MCP server interface
-is planned later.
+open an experimental read-only terminal interface, and expose bounded project
+facts through a minimal read-only MCP server.
 
 The repository contains project infrastructure, validation/import contracts,
 template ownership rules, and pure in-memory placeholder rendering. It does not
@@ -115,6 +115,20 @@ writes only from an interactive terminal and only after the answer `y` or `yes`:
 node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
+### Read-only MCP server
+
+Create an explicit project catalog as described in
+[docs/mcp-interface.md](docs/mcp-interface.md), then start the local stdio
+server:
+
+```bash
+MCP_FORGE_CATALOG=./forge-projects.json node apps/mcp-server/dist/index.js
+```
+
+The seven MCP tools can inspect registered projects, permissions, tracked files,
+diagnostics, and fresh previews. They cannot generate, apply, approve, write,
+delete, install, or execute anything, and the server never scans for projects.
+
 The generated TypeScript project is currently placeholder output, not yet a
 functional MCP SDK server. The package is also private and is not published to
 npm. The reserved installed command forms are:
@@ -140,9 +154,10 @@ For repeatable end-to-end verification, see the
 ```text
 apps/
   cli/          Validation, inspection, TUI, preview, and generation workflows
-  mcp-server/   Future MCP interface to the forge
+  mcp-server/   Minimal read-only stdio interface to registered Forge projects
 packages/
   core/         Pure inspection, change-plan, and apply contracts
+  engine/       Shared read-only project inspection and preview orchestration
   schemas/      Zod schemas for configuration contracts
   generators/   Future code and documentation generators
   fs-adapter/    Bounded filesystem inspection and apply execution
@@ -170,7 +185,8 @@ The current workspace version is `v0.1.0-alpha.2`. It supports configuration
 validation, safe import normalization, deterministic in-memory rendering,
 bounded filesystem inspection, complete read-only generation previews,
 structured project inspection, an experimental read-only TUI, and confirmed
-filesystem application. It still does not produce a functional MCP SDK server.
+filesystem application. The separate Forge MCP interface exposes only read-only
+project facts; generated projects still are not functional MCP SDK servers.
 
 Public APIs and configuration formats may change during the alpha series. The
 first version of the configuration contract is documented in
@@ -202,6 +218,11 @@ Contract and next generation state without filesystem access. It also exposes
 pure Project Inspection and Project Change Plan contracts. See
 [docs/apply-contract.md](docs/apply-contract.md) and the
 [engine and TUI architecture](docs/architecture/forge-engine-and-tui.md).
+
+`@mcp-server-forge/engine` composes validation and bounded filesystem evidence
+into the same inspection and preview contracts for the CLI and MCP transport.
+`apps/mcp-server` registers an exact seven-tool read-only allowlist over that
+service. See [docs/mcp-interface.md](docs/mcp-interface.md).
 
 `@mcp-server-forge/fs-adapter` safely converts explicit project and template
 directories into abstract target metadata, optional validated generation state,

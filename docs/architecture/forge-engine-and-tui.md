@@ -21,10 +21,11 @@ owns configuration-file loading and workflow composition. Filesystem mutation is
 confined to `applyGenerationWorkspace`; `validate`, `preview`, `inspect`, and
 `tui` do not call it.
 
-The reusable engine is the composition of the pure schemas, validators,
-generators, templates, and core contracts. It is not a daemon and does not own
-terminal output. Other future clients can consume the same structured values,
-but a stable remote engine API is not implemented.
+The reusable engine application package composes the pure schemas, validators,
+generators, templates, core contracts, and bounded filesystem observations. It
+is not a daemon and does not own terminal output. The CLI and local read-only
+MCP server consume the same structured values; a stable remote engine API is not
+implemented.
 
 ## Project Inspection contract
 
@@ -100,9 +101,10 @@ Non-TTY execution is rejected before project inspection and points automation to
 `mcp-forge inspect`. ANSI control sequences are limited to the interactive TUI;
 inspect text and JSON output contain none.
 
-## Future engine API
+## Local MCP consumer and future engine API
 
-A future API can expose Project Inspection and Project Change Plan values to an
-MCP server, desktop client, web client, or editor integration. That work must
-define authentication, trust, cancellation, and approval boundaries first. None
-of those clients or remote operations is implemented in this phase.
+The local stdio MCP server exposes a bounded subset of Project Inspection and
+Project Change Plan values through an explicit project catalog. It has no apply
+or approval operation. A future remote API, desktop client, web client, or
+editor integration must define authentication, trust, cancellation, and approval
+boundaries first; none is implemented in this phase.

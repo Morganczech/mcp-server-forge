@@ -2,8 +2,11 @@
 
 ## Status
 
-This document is a design proposal. None of the MCP tools, project catalog,
-diagnostic codes, or runtime behavior described here is implemented yet.
+This document records the approved Phase 4 design baseline. Its minimal local
+stdio subset is implemented and documented in
+[the MCP interface reference](../mcp-interface.md). Sections below that propose
+additional inputs, tools, diagnostics, or future transports remain design ideas
+and are not part of the implemented allowlist.
 
 ## Main goal
 
@@ -74,11 +77,18 @@ startup, the operator supplies a read-only catalog whose entries contain:
 
 ```json
 {
-  "projectId": "customer-records",
-  "root": "./projects/customer-records",
-  "configPath": "./projects/customer-records/mcp-forge.json",
-  "templatePath": "./templates/basic-typescript-server",
-  "statePath": ".mcp-forge/generated-state.json"
+  "catalogVersion": "1",
+  "allowedRoots": ["./projects"],
+  "projects": [
+    {
+      "projectId": "customer-records",
+      "label": "Customer records",
+      "root": "./projects/customer-records",
+      "configPath": "mcp-forge.json",
+      "templatePath": "template",
+      "statePath": ".mcp-forge/generated-state.json"
+    }
+  ]
 }
 ```
 
@@ -104,7 +114,10 @@ Successful and unsuccessful tool results should use a common bounded envelope:
   "success": true,
   "projectId": "customer-records",
   "data": {},
-  "summary": "The project is healthy.",
+  "summary": {
+    "status": "healthy",
+    "message": "The project is healthy."
+  },
   "diagnostics": [],
   "page": {
     "nextCursor": null,

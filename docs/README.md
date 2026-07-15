@@ -18,7 +18,8 @@ Inspection and Project Change Plan contracts and the experimental read-only
 terminal client are described in the
 [engine and TUI architecture](architecture/forge-engine-and-tui.md).
 
-The proposed next phase is a strictly
-[read-only Forge MCP interface and trust boundary](architecture/read-only-forge-mcp-interface.md).
-It is a design only: no MCP tools, apply operations, AI provider, or LM Studio
-client are implemented yet.
+The implemented minimal [read-only Forge MCP interface](mcp-interface.md) uses
+an explicit project catalog and the same shared inspection and planning
+contracts. Its approved trust-boundary design is recorded in
+[the Phase 4 architecture proposal](architecture/read-only-forge-mcp-interface.md).
+No MCP apply operations, AI provider, or LM Studio client are implemented.

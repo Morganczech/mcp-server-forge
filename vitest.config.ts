@@ -26,6 +26,9 @@ export default defineConfig({
       "@mcp-server-forge/fs-adapter": fileURLToPath(
         new URL("./packages/fs-adapter/src/index.ts", import.meta.url),
       ),
+      "@mcp-server-forge/engine": fileURLToPath(
+        new URL("./packages/engine/src/index.ts", import.meta.url),
+      ),
     },
   },
   test: {

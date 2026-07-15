@@ -29,5 +29,9 @@
 - Keep apply, approval, installation, external registries, and AI providers out
   of the MCP interface.
 
+The initial local stdio interface, catalog, seven-tool allowlist, shared
+read-only application service, and security test coverage are implemented.
+Broader clients and any mutating workflow remain outside this phase.
+
 Dates and release commitments will be added after the configuration contract has
 been validated with representative examples.

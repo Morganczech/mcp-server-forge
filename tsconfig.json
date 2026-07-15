@@ -15,7 +15,8 @@
       "@mcp-server-forge/templates": ["./packages/templates/src/index.ts"],
       "@mcp-server-forge/generators": ["./packages/generators/src/index.ts"],
       "@mcp-server-forge/core": ["./packages/core/src/index.ts"],
-      "@mcp-server-forge/fs-adapter": ["./packages/fs-adapter/src/index.ts"]
+      "@mcp-server-forge/fs-adapter": ["./packages/fs-adapter/src/index.ts"],
+      "@mcp-server-forge/engine": ["./packages/engine/src/index.ts"]
     },
     "rootDir": ".",
     "skipLibCheck": true,
