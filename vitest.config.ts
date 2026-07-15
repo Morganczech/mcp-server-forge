@@ -17,6 +17,9 @@ export default defineConfig({
       "@mcp-server-forge/templates": fileURLToPath(
         new URL("./packages/templates/src/index.ts", import.meta.url),
       ),
+      "@mcp-server-forge/capabilities": fileURLToPath(
+        new URL("./packages/capabilities/src/index.ts", import.meta.url),
+      ),
       "@mcp-server-forge/generators": fileURLToPath(
         new URL("./packages/generators/src/index.ts", import.meta.url),
       ),
