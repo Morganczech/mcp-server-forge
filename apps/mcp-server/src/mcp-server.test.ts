@@ -21,7 +21,10 @@ import {
   isForgeProjectChangePlan,
   isForgeProjectInspection,
 } from "@mcp-server-forge/core";
+import { loadTemplateBundle } from "@mcp-server-forge/fs-adapter";
+import { renderForgeTemplate } from "@mcp-server-forge/generators";
 import { hashGeneratedContent } from "@mcp-server-forge/templates";
+import { validateForgeProject } from "@mcp-server-forge/validators";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { loadProjectCatalog } from "./catalog.js";
@@ -98,6 +101,28 @@ async function createProject(
   if (includeTemplate)
     await cp(templateFixture, join(root, "template"), { recursive: true });
   return root;
+}
+
+async function alignGeneratedConfig(root: string): Promise<void> {
+  const validation = validateForgeProject(
+    JSON.parse(await readFile(join(root, "mcp-forge.json"), "utf8")) as unknown,
+  );
+  const template = await loadTemplateBundle(join(root, "template"));
+  if (
+    !validation.success ||
+    !template.success ||
+    template.bundle === undefined
+  ) {
+    throw new Error("Expected a renderable project fixture");
+  }
+  const rendered = renderForgeTemplate({
+    config: validation.data,
+    manifest: template.bundle.manifest,
+    templateSources: template.bundle.templateSources,
+  }).files.find(({ path }) => path === "mcp-forge.json");
+  if (rendered === undefined)
+    throw new Error("Expected generated config output");
+  await writeFile(join(root, "mcp-forge.json"), rendered.content);
 }
 
 interface CatalogProjectInput {
@@ -415,8 +440,10 @@ describe("Forge read-only application service", () => {
       await readFile(join(warningRoot, "mcp-forge.json"), "utf8"),
     ) as {
       server: { capabilities: { tools: boolean } };
+      tools: unknown[];
     };
     warningConfig.server.capabilities.tools = true;
+    warningConfig.tools = [];
     await writeFile(
       join(warningRoot, "mcp-forge.json"),
       JSON.stringify(warningConfig),
@@ -534,7 +561,8 @@ describe("Forge read-only application service", () => {
   });
 
   it("adapts the existing planner for preview and reports a missing template", async () => {
-    await createProject("preview-ready");
+    const previewRoot = await createProject("preview-ready");
+    await alignGeneratedConfig(previewRoot);
     await createProject("preview-missing", false);
     const { service } = await readyService([
       { projectId: "preview-ready", templatePath: "template" },

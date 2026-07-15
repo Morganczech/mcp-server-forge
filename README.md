@@ -7,8 +7,8 @@ open an experimental read-only terminal interface, and expose bounded project
 facts through a minimal read-only MCP server.
 
 The repository contains project infrastructure, validation/import contracts,
-template ownership rules, and pure in-memory placeholder rendering. It does not
-yet generate a functional MCP SDK server.
+template ownership rules, safe generation, and a first functional local MCP
+server template with one deterministic `hello` tool.
 
 ## Prerequisites
 
@@ -115,6 +115,25 @@ writes only from an interactive terminal and only after the answer `y` or `yes`:
 node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
+After confirming generation, install and run the standalone local server:
+
+```bash
+cd target-project
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm start
+```
+
+The generated server uses stdio and is launched by an MCP client with the local
+Node.js executable and the absolute path to `target-project/dist/index.js`. It
+is not published to npm and does not require `npx`. Its runtime does not use the
+filesystem, network, shell, environment variables, or secrets. A first
+dependency installation can still require registry access unless the local pnpm
+store already contains every pinned dependency. See the
+[basic TypeScript server guide](docs/templates/basic-typescript-server.md).
+
 ### Read-only MCP server
 
 Create an explicit project catalog as described in
@@ -129,9 +148,8 @@ The seven MCP tools can inspect registered projects, permissions, tracked files,
 diagnostics, and fresh previews. They cannot generate, apply, approve, write,
 delete, install, or execute anything, and the server never scans for projects.
 
-The generated TypeScript project is currently placeholder output, not yet a
-functional MCP SDK server. The package is also private and is not published to
-npm. The reserved installed command forms are:
+The Forge workspace packages remain private and are not published to npm. The
+reserved installed command forms are:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
@@ -186,7 +204,9 @@ validation, safe import normalization, deterministic in-memory rendering,
 bounded filesystem inspection, complete read-only generation previews,
 structured project inspection, an experimental read-only TUI, and confirmed
 filesystem application. The separate Forge MCP interface exposes only read-only
-project facts; generated projects still are not functional MCP SDK servers.
+project facts. The `basic-typescript-server` template now produces a functional
+local stdio MCP server with one bounded, side-effect-free `hello` tool; it is a
+learning and connectivity template, not a business server.
 
 Public APIs and configuration formats may change during the alpha series. The
 first version of the configuration contract is documented in

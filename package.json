@@ -15,6 +15,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:template-smoke": "node scripts/basic-template-smoke.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },

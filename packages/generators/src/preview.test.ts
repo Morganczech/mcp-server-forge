@@ -210,7 +210,7 @@ describe("generation preview decisions", () => {
 
   it("skips an existing create-once target", () => {
     const preview = createGenerationPreview(
-      singleFileRequest("SYSTEM_PROMPT.md", {
+      singleFileRequest(".gitignore", {
         target: { exists: true, contentHash: hashGeneratedContent("user") },
       }),
     );
@@ -223,7 +223,7 @@ describe("generation preview decisions", () => {
 
   it("always preserves an existing user-owned file", () => {
     const preview = createGenerationPreview(
-      singleFileRequest("SYSTEM_PROMPT.md", {
+      singleFileRequest(".gitignore", {
         target: { exists: true },
       }),
     );
@@ -646,7 +646,7 @@ describe("preview determinism and summary", () => {
       targetState: {
         files: [
           {
-            path: "SYSTEM_PROMPT.md",
+            path: ".gitignore",
             exists: true,
             contentHash: hashGeneratedContent("user"),
           },
@@ -655,13 +655,20 @@ describe("preview determinism and summary", () => {
     });
 
     expect(preview.files.map(({ path }) => path)).toEqual([
+      ".gitignore",
       "README.md",
-      "SYSTEM_PROMPT.md",
+      "mcp-forge.json",
       "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
       "src/index.ts",
+      "src/tools/hello.ts",
+      "tests/hello.test.ts",
+      "tsconfig.json",
+      "vitest.config.ts",
     ]);
     expect(preview.summary).toEqual({
-      create: 3,
+      create: 10,
       replace: 0,
       skip: 1,
       conflict: 0,

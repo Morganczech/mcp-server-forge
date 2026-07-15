@@ -92,7 +92,7 @@ JSON mode emits exactly one JSON document on standard output:
   "configPath": "/absolute/path/mcp-forge.json",
   "projectRoot": "/absolute/path/project",
   "templatePath": "/absolute/path/template",
-  "template": { "id": "basic-typescript-server", "version": "1.0.0" },
+  "template": { "id": "basic-typescript-server", "version": "1.1.0" },
   "summary": {
     "create": 1,
     "replace": 0,

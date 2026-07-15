@@ -194,16 +194,16 @@ layer discovers or writes filesystem state.
 
 ## Version 1 limitations
 
-- no functional MCP SDK server generation;
-- no dependency or package-version resolution;
+- the renderer does not resolve dependencies dynamically; templates must pin
+  their own reviewed dependency and lockfile content;
 - no loops, `else`, partials, arbitrary expressions, or custom helpers;
 - no binary templates;
-- no filesystem source loader or output writer;
-- no generation-state creation; comparison is limited to the separate read-only
-  generation preview contract;
-- no plan application, merge markers, migrations, registry, clients, or MCP
-  tools; the separate CLI can preview output but cannot apply it.
+- no filesystem source loader or output writer inside this pure package;
+- no generation-state creation inside this pure package;
+- no plan application, merge markers, migrations, registry, or clients inside
+  this pure package; the separate CLI owns the confirmed apply workflow.
 
-The included basic and knowledge templates intentionally generate transparent
-placeholder projects. Their README and package metadata state that dependency
-resolution and functional MCP integration are still pending.
+The included basic template generates one functional local stdio MCP server with
+a bounded `hello` tool and pinned standalone dependencies. The knowledge
+template remains a transparent data-oriented example rather than a complete
+functional knowledge server.

@@ -78,15 +78,8 @@ describe("safe render context", () => {
 
     expect(context.project.name).toBe("example-server");
     expect(context.server.transport).toBe("stdio");
-    expect(context.capabilities.tools).toBe(false);
-    expect(context.environment).toEqual([
-      {
-        name: "EXAMPLE_TOKEN",
-        description: "A secret supplied only at runtime.",
-        required: true,
-        secret: true,
-      },
-    ]);
+    expect(context.capabilities.tools).toBe(true);
+    expect(context.environment).toEqual([]);
   });
 
   it("never includes secret defaults or external-source references", () => {
@@ -94,7 +87,7 @@ describe("safe render context", () => {
       createRenderContext(config("basic-config")),
     );
 
-    expect(serialized).not.toContain("FORGE_TEST_SECRET_VALUE");
+    expect(serialized).not.toContain("secret-value");
     expect(serialized).not.toContain("externalSource");
     expect(serialized).not.toContain("default");
   });
@@ -210,7 +203,7 @@ describe("full manifest rendering", () => {
 
     expect(result.success).toBe(false);
     expect(codes(result)).toContain("GEN_TEMPLATE_SOURCE_MISSING");
-    expect(result.files).toHaveLength(3);
+    expect(result.files).toHaveLength(10);
     expect(result.metadata.skippedFiles).toContainEqual(
       expect.objectContaining({
         path: "src/index.ts",
@@ -228,7 +221,7 @@ describe("full manifest rendering", () => {
 
     expect(result.success).toBe(false);
     expect(codes(result)).toContain("GEN_TEMPLATE_SOURCE_INVALID");
-    expect(result.files).toHaveLength(3);
+    expect(result.files).toHaveLength(10);
     expect(result.metadata.skippedFiles).toContainEqual(
       expect.objectContaining({ reason: "source-invalid" }),
     );
@@ -245,7 +238,7 @@ describe("full manifest rendering", () => {
     const result = renderForgeTemplate(input);
 
     expect(codes(result)).toContain("GEN_TEMPLATE_CONDITION_INVALID");
-    expect(result.files).toHaveLength(3);
+    expect(result.files).toHaveLength(10);
     expect(result.metadata.skippedFiles).toContainEqual(
       expect.objectContaining({ reason: "condition-invalid" }),
     );
@@ -265,10 +258,17 @@ describe("full manifest rendering", () => {
 
     expect(result.success).toBe(true);
     expect(result.files.map(({ path }) => path)).toEqual([
+      ".gitignore",
       "README.md",
-      "SYSTEM_PROMPT.md",
+      "mcp-forge.json",
       "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
       "src/index.ts",
+      "src/tools/hello.ts",
+      "tests/hello.test.ts",
+      "tsconfig.json",
+      "vitest.config.ts",
     ]);
     expect(result.files.map(({ content }) => content).join("\n")).not.toContain(
       "FORGE_TEST_SECRET_VALUE",
@@ -295,13 +295,106 @@ describe("full manifest rendering", () => {
     const packageFile = result.files.find(
       ({ path }) => path === "package.json",
     );
+    const packageJson = JSON.parse(packageFile?.content ?? "") as Record<
+      string,
+      unknown
+    >;
 
     expect(packageFile).toBeDefined();
-    expect(JSON.parse(packageFile?.content ?? "")).toMatchObject({
+    expect(packageJson).toMatchObject({
       name: "example-server",
       version: "0.1.0",
       private: true,
+      type: "module",
+      packageManager: "pnpm@11.7.0",
+      scripts: {
+        build: "tsc -p tsconfig.json",
+        start: "node dist/index.js",
+        test: "vitest run",
+        typecheck: "tsc -p tsconfig.json --noEmit",
+      },
+      dependencies: {
+        "@modelcontextprotocol/sdk": "1.29.0",
+        zod: "3.25.76",
+      },
     });
+    expect(packageJson).not.toHaveProperty("bin");
+    expect(JSON.stringify(packageJson)).not.toContain("workspace:");
+  });
+
+  it("renders a valid standalone project contract and TypeScript configuration", () => {
+    const result = renderForgeTemplate(request("basic-typescript-server"));
+    const contents = new Map(
+      result.files.map(({ path, content }) => [path, content]),
+    );
+    const generatedConfig = forgeConfigSchema.parse(
+      JSON.parse(contents.get("mcp-forge.json") ?? ""),
+    );
+    const tsconfig = JSON.parse(contents.get("tsconfig.json") ?? "") as {
+      compilerOptions?: { module?: string; rootDir?: string; outDir?: string };
+    };
+
+    expect(generatedConfig).toMatchObject({
+      server: {
+        transport: "stdio",
+        capabilities: { tools: true, resources: false, prompts: false },
+      },
+      tools: [{ name: "hello", readOnly: true, destructive: false }],
+      security: {
+        networkAccess: "none",
+        shellAccess: false,
+        fileWrite: false,
+        fileDelete: false,
+      },
+    });
+    expect(tsconfig.compilerOptions).toMatchObject({
+      module: "NodeNext",
+      rootDir: "src",
+      outDir: "dist",
+    });
+    expect(contents.get("src/index.ts")).toContain("StdioServerTransport");
+    expect(contents.get("src/index.ts")).toContain('registerTool(\n  "hello"');
+    expect(contents.get("src/tools/hello.ts")).toContain(
+      "MAX_HELLO_NAME_LENGTH = 80",
+    );
+    expect(contents.get("tests/hello.test.ts")).toContain(
+      'createHelloResult("Mirďas")',
+    );
+    expect(contents.get("README.md")).toContain("## Connect an MCP client");
+    expect(JSON.stringify(generatedConfig.tools[0]?.inputSchema)).not.toMatch(
+      /"(?:path|url|command|code)"/u,
+    );
+    expect(
+      `${contents.get("src/index.ts")}\n${contents.get("src/tools/hello.ts")}`,
+    ).not.toMatch(
+      /node:(?:fs|child_process|http|https|net)|\bfetch\s*\(|process\.env/u,
+    );
+  });
+
+  it("uses the documented ownership allowlist without unsafe local data", () => {
+    const result = renderForgeTemplate(request("basic-typescript-server"));
+    const ownership = Object.fromEntries(
+      result.files.map(({ path, ownership: value }) => [path, value]),
+    );
+    const serialized = JSON.stringify(result);
+
+    expect(ownership).toEqual({
+      ".gitignore": "user-owned",
+      "README.md": "shared",
+      "mcp-forge.json": "forge-owned",
+      "package.json": "forge-owned",
+      "pnpm-lock.yaml": "forge-owned",
+      "pnpm-workspace.yaml": "forge-owned",
+      "src/index.ts": "forge-owned",
+      "src/tools/hello.ts": "forge-owned",
+      "tests/hello.test.ts": "forge-owned",
+      "tsconfig.json": "forge-owned",
+      "vitest.config.ts": "forge-owned",
+    });
+    expect(serialized).not.toMatch(/\/Users\/(?!example)|\/home\/(?!example)/u);
+    expect(serialized).not.toMatch(
+      /(?:api[_-]?key|password|private[_-]?key)/iu,
+    );
   });
 
   it("produces deterministic sorting and hashes", () => {

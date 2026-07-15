@@ -9,6 +9,11 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Added
 
+- functional `basic-typescript-server` template that generates a standalone
+  local stdio MCP server with one deterministic `hello` tool;
+- pinned standalone dependency lockfile, TypeScript and Vitest configuration,
+  generated project tests, local client instructions, and an explicit deny
+  security configuration;
 - pure Project Inspection, generated-server permission, and deterministic
   Project Change Plan contracts;
 - read-only `mcp-forge inspect` text and JSON output for project health,
@@ -22,6 +27,9 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Changed
 
+- replace the four-file placeholder output with eleven purposeful project files
+  and template version `1.1.0` while preserving manifest version 1 and workspace
+  package versions;
 - interactive generation confirmations are bound to the displayed deterministic
   plan identity before the existing fresh-preview and Apply Contract checks;
 - tracked-file inspection preserves ownership metadata already recorded in
@@ -29,6 +37,10 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Documentation
 
+- document creating, installing, building, starting, connecting, inspecting, and
+  modifying the first functional local template, including the distinction
+  between local runtime, offline runtime, offline installation, and npm/npx
+  publication;
 - document the reusable engine boundary, terminal client isolation, command
   usage, and current non-goals;
 - document MCP catalog setup, client configuration, response bounds, trust
@@ -46,12 +58,20 @@ pre-release identifiers while its public contracts are still evolving.
 
 ### Testing
 
+- generate the functional template through the real Apply Contract and
+  filesystem executor, then frozen-install, typecheck, test, build, inspect, and
+  connect with the official MCP client on every CI operating system;
+- verify the exact generated allowlist, `hello` responses, idempotent preview,
+  forge-owned conflict protection, clean stdio behavior, and zero runtime
+  filesystem changes;
 - cover catalog and path boundaries, all seven read-only services, pagination,
   redaction, response limits, deterministic summaries, zero writes, and an
   official MCP client/server transport integration.
 
 ### Known limitations
 
+- the first functional template is a connectivity and learning example with one
+  `hello` tool, not a production or business MCP server;
 - the TUI is a small terminal-only foundation and has no apply or configuration
   editing actions;
 - a remote engine API, approval tokens, desktop, web, editor, and MCP clients

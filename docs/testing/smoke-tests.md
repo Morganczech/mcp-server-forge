@@ -17,12 +17,16 @@ The smoke test verifies:
 - idempotent repeated generation;
 - conflict detection after a forge-owned file is manually modified;
 - documented diagnostics and process exit codes.
+- frozen installation, typecheck, tests, and build of the generated standalone
+  project;
+- an official MCP client handshake, exact `hello` allowlist and tool call;
+- zero generated-server filesystem changes while running.
 
 It is not a release, package publication, exhaustive security audit, performance
 benchmark, or compatibility guarantee for every Node.js distribution. The
-current template still renders a placeholder TypeScript project rather than a
-functional MCP SDK server. The CLI package is private and is run locally from
-the monorepo build; it is not published to npm.
+functional template intentionally contains one example tool rather than a
+business server. The CLI package is private and is run locally from the monorepo
+build; neither Forge nor the generated server is published to npm.
 
 ## Environment
 
@@ -56,6 +60,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
+pnpm test:template-smoke
 git diff --check
 ```
 
@@ -96,11 +101,13 @@ node apps/cli/dist/index.js preview --config ./packages/generators/fixtures/vali
 Expected result:
 
 - exit code `0`;
-- four `create` actions and `Safe to apply: yes`;
+- eleven `create` actions and `Safe to apply: yes`;
 - no generated file or generation state is written.
 
-The planned project files are `README.md`, `SYSTEM_PROMPT.md`, `package.json`,
-and `src/index.ts`.
+The planned project files are `.gitignore`, `README.md`, `mcp-forge.json`,
+`package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`, `src/index.ts`,
+`src/tools/hello.ts`, `tests/hello.test.ts`, `tsconfig.json`, and
+`vitest.config.ts`.
 
 ## Generate
 
@@ -116,8 +123,8 @@ At the prompt, enter `yes` and press Enter.
 Expected result:
 
 - exit code `0`;
-- four file changes are reported as applied;
-- only the four planned project files are created;
+- eleven file changes are reported as applied;
+- only the eleven planned project files are created;
 - `.mcp-forge/generated-state.json` is created after the project files;
 - no unplanned project files are created.
 
@@ -136,10 +143,47 @@ node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/val
 Expected result:
 
 - exit code `0`;
-- four `skip` actions;
+- eleven `skip` actions;
 - no confirmation prompt because there are no write operations;
 - `No file changes to apply; generation state was not changed.`;
 - project file contents and generation state remain unchanged.
+
+## Verify the generated MCP server
+
+Before applying the manual conflict change, enter the generated directory and
+verify its pinned standalone project:
+
+```bash
+cd smoke-target
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build
+cd ..
+```
+
+Run `node ./smoke-target/dist/index.js` through an MCP client rather than
+expecting terminal output. The process speaks protocol messages on stdout and
+must not emit normal logs there. The client must complete a handshake, list
+exactly `hello`, and receive these structured responses:
+
+```json
+{ "message": "Hello from your local MCP server!" }
+```
+
+```json
+{ "message": "Hello, Mirďas!" }
+```
+
+Closing the client must stop the child process cleanly and the runtime must not
+change project files. The repository command `pnpm test:template-smoke`
+automates generation, installation, build, inspection, MCP calls, idempotency,
+conflict protection, cleanup, and the no-write comparison. CI runs it on Ubuntu,
+macOS, and Windows after the normal workspace build.
+
+This is a local server and its runtime is offline. A first clean installation
+still requires registry access unless the exact dependencies are already in the
+local pnpm store. No npm publication or `npx` command is involved.
 
 ## Detect a manually modified forge-owned file
 
@@ -206,10 +250,13 @@ whether the target or generation state changed.
 - [ ] Clean checkout and frozen-lockfile install succeeded.
 - [ ] Format, lint, typecheck, tests, build, and diff check passed.
 - [ ] Validate returned the expected success result.
-- [ ] Preview planned four creates and performed no writes.
+- [ ] Preview planned eleven creates and performed no writes.
 - [ ] TTY-confirmed generation created only the expected files and state.
-- [ ] Repeated generation produced four skips and no writes.
+- [ ] Repeated generation produced eleven skips and no writes.
 - [ ] Manual forge-owned modification produced the expected conflict.
+- [ ] Generated project frozen install, typecheck, tests, and build passed.
+- [ ] Official MCP client saw only `hello` and both expected responses.
+- [ ] Generated server runtime produced no stderr or filesystem writes.
 - [ ] Exit codes and diagnostics matched the documented contracts.
 - [ ] No unexpected filesystem changes occurred.
 

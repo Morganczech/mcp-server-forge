@@ -89,7 +89,7 @@ describe("mcp-forge inspect", () => {
     expect(JSON.parse(first.stdout)).toMatchObject({
       status: "healthy",
       generation: { stateAvailable: false, safeToApply: true },
-      summary: { files: 4, conflicts: 0 },
+      summary: { files: 11, conflicts: 0 },
     });
     expect(await readdir(projectRoot, { recursive: true })).toEqual(before);
 

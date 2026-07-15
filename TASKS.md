@@ -34,3 +34,8 @@
       contracts.
 - [x] Add MCP contract, redaction, pagination, size-limit, path-boundary, and
       no-write tests.
+- [x] Replace the basic placeholder with a functional standalone local stdio MCP
+      server containing one bounded `hello` tool.
+- [x] Add cross-platform template generation, frozen installation, build,
+      inspection, official MCP client handshake, idempotency, conflict, and
+      zero-runtime-write smoke coverage.

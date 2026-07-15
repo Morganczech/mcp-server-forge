@@ -33,5 +33,18 @@ The initial local stdio interface, catalog, seven-tool allowlist, shared
 read-only application service, and security test coverage are implemented.
 Broader clients and any mutating workflow remain outside this phase.
 
+## Phase 5 — Functional local offline MCP template
+
+- Replace the basic placeholder with one standalone TypeScript MCP server.
+- Generate pinned installation metadata, tests, build configuration, and local
+  stdio client instructions.
+- Verify generation, installation, build, inspection, MCP handshake, the bounded
+  `hello` tool, conflict protection, and zero runtime writes.
+
+The first functional template is implemented. It runs locally without network,
+filesystem, shell, environment, or secret access after dependencies are
+installed. It intentionally provides only one example tool; additional
+capabilities and production templates remain future work.
+
 Dates and release commitments will be added after the configuration contract has
 been validated with representative examples.

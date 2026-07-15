@@ -1,2 +1,39 @@
-// This is a placeholder, not a functional MCP SDK implementation.
-console.error({{json project.title}});
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+
+import { createHelloResult, MAX_HELLO_NAME_LENGTH } from "./tools/hello.js";
+
+const server = new McpServer({
+  name: {{json server.name}},
+  version: {{json server.version}}
+});
+
+server.registerTool(
+  "hello",
+  {
+    title: "Say hello",
+    description: "Return a deterministic local greeting without side effects.",
+    inputSchema: {
+      name: z.string().trim().min(1).max(MAX_HELLO_NAME_LENGTH).optional()
+    },
+    outputSchema: {
+      message: z.string()
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false
+    }
+  },
+  async ({ name }) => {
+    const result = createHelloResult(name);
+    return {
+      content: [{ type: "text", text: result.message }],
+      structuredContent: result
+    };
+  }
+);
+
+await server.connect(new StdioServerTransport());

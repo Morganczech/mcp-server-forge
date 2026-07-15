@@ -8,9 +8,9 @@ Forge. The normative release and authorization requirements remain in
 
 The current alpha release is a Git tag and GitHub prerelease built from `main`.
 There is no release workflow and no package publication step. The root,
-applications, shared packages, and example are all private. The generated
-TypeScript project is still a placeholder rather than a functional MCP SDK
-server.
+applications, shared packages, and example are all private. The basic generated
+TypeScript project is functional but intentionally limited to one local `hello`
+tool and is not published to npm.
 
 Publishing to npm is **not applicable** for the current alpha series. Do not run
 `npm publish` or `pnpm publish` while packages are private and their publish
@@ -60,7 +60,8 @@ changes.
 - [ ] Complete the cross-platform [smoke-test procedure](testing/smoke-tests.md)
       or verify the automated smoke coverage and current platform reports.
 - [ ] Confirm README and CLI documentation describe implemented behavior and
-      still identify the generated project as placeholder output.
+      identify the generated basic project as a one-tool local example rather
+      than a production business server.
 - [ ] Move the relevant `Unreleased` changelog entries into a dated section for
       the proposed version, leaving a new empty `Unreleased` section.
 - [ ] Set the synchronized package versions listed above to the proposed version

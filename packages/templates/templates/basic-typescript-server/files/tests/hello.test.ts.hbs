@@ -1,0 +1,17 @@
+import { describe, expect, it } from "vitest";
+
+import { createHelloResult } from "../src/tools/hello.js";
+
+describe("hello tool", () => {
+  it("returns the default local greeting", () => {
+    expect(createHelloResult()).toEqual({
+      message: "Hello from your local MCP server!"
+    });
+  });
+
+  it("returns a personalized deterministic greeting", () => {
+    expect(createHelloResult("Mirďas")).toEqual({
+      message: "Hello, Mirďas!"
+    });
+  });
+});

@@ -87,7 +87,7 @@ describe("mcp-forge generate", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("MCP Server Forge generation preview");
-    expect(result.stdout).toContain("Applied 4 file change(s)");
+    expect(result.stdout).toContain("Applied 11 file change(s)");
     expect(await readFile(join(projectRoot, "package.json"), "utf8")).toContain(
       '"name"',
     );
@@ -108,11 +108,18 @@ describe("mcp-forge generate", () => {
     const first = await capture(true);
     expect(first.exitCode).toBe(0);
     expect(await listFiles(projectRoot)).toEqual([
+      ".gitignore",
       ".mcp-forge/generated-state.json",
       "README.md",
-      "SYSTEM_PROMPT.md",
+      "mcp-forge.json",
       "package.json",
+      "pnpm-lock.yaml",
+      "pnpm-workspace.yaml",
       "src/index.ts",
+      "src/tools/hello.ts",
+      "tests/hello.test.ts",
+      "tsconfig.json",
+      "vitest.config.ts",
     ]);
 
     const statePath = join(projectRoot, ".mcp-forge/generated-state.json");
@@ -124,7 +131,7 @@ describe("mcp-forge generate", () => {
 
     const second = await capture(true);
     expect(second.exitCode).toBe(0);
-    expect(second.stdout).toContain("skip:           4");
+    expect(second.stdout).toContain("skip:           11");
     expect(second.stdout).toContain(
       "No file changes to apply; generation state was not changed.",
     );
@@ -166,6 +173,25 @@ describe("mcp-forge generate", () => {
         code: "ENOENT",
       },
     );
+  });
+
+  it("preserves user-maintained shared README content and blocks automatic merge", async () => {
+    const first = await capture(true);
+    expect(first.exitCode).toBe(0);
+
+    const readmePath = join(projectRoot, "README.md");
+    const statePath = join(projectRoot, ".mcp-forge/generated-state.json");
+    const stateBefore = await readFile(statePath, "utf8");
+    const customized = `${await readFile(readmePath, "utf8")}\nUser-maintained note.\n`;
+    await writeFile(readmePath, customized);
+
+    const repeated = await capture(true);
+
+    expect(repeated.exitCode).toBe(5);
+    expect(repeated.stdout).toContain("manual-review");
+    expect(repeated.stdout).toContain("SHARED_FILE_REQUIRES_MERGE");
+    expect(await readFile(readmePath, "utf8")).toBe(customized);
+    expect(await readFile(statePath, "utf8")).toBe(stateBefore);
   });
 
   it("blocks a changed target and a different safe plan after confirmation", async () => {

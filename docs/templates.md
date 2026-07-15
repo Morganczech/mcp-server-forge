@@ -20,7 +20,7 @@ compatibility, files, and optional directories:
   "manifestVersion": "1",
   "template": {
     "id": "basic-typescript-server",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "title": "Basic TypeScript MCP server",
     "description": "Template contract for a standard server.",
     "kind": "server",
@@ -225,14 +225,18 @@ Validation-library internals and messages are not part of the public result.
 
 ## Examples
 
-Data-only example templates live in:
+Versioned example templates live in:
 
 - `packages/templates/templates/basic-typescript-server`;
 - `packages/templates/templates/knowledge-typescript-server`.
 
 Their `.hbs` files use the restricted renderer language documented in
 [rendering.md](rendering.md). Template content is stored in those files, not
-hard-coded in TypeScript.
+hard-coded in TypeScript. `basic-typescript-server@1.1.0` is functional and is
+documented in the
+[standalone template guide](templates/basic-typescript-server.md);
+`knowledge-typescript-server` remains a data-oriented example rather than a
+complete production server.
 
 ## Not implemented yet
 

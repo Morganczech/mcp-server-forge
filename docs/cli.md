@@ -60,6 +60,32 @@ node apps/cli/dist/index.js validate ./mcp-forge.json
 The package reserves the future executable name `mcp-forge`. It is private and
 is not published yet.
 
+## Functional basic template
+
+The repository's `basic-typescript-server` template produces a standalone
+private Node.js 22 project. Generate it through the normal preview,
+confirmation, stale-target, and Apply Contract workflow:
+
+```bash
+node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
+```
+
+Then run these commands inside `target-project`:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm start
+```
+
+The generated `dist/index.js` is a local stdio MCP server with one `hello` tool.
+It needs no `npx`, npm account, environment variables, or network at runtime. A
+clean first installation is not guaranteed offline: pnpm needs registry access
+unless all pinned packages are already present in its local store. See the
+[template guide](templates/basic-typescript-server.md).
+
 ## Validate command
 
 ```text

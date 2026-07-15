@@ -2,9 +2,9 @@
   "manifestVersion": "1",
   "template": {
     "id": "basic-typescript-server",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "title": "Basic TypeScript MCP server",
-    "description": "Template contract for a standard TypeScript MCP server.",
+    "description": "Functional local offline TypeScript MCP server with one hello tool.",
     "kind": "server",
     "runtime": "node",
     "language": "typescript"
@@ -31,6 +31,54 @@
       "contentType": "text/typescript"
     },
     {
+      "path": "src/tools/hello.ts",
+      "source": "files/src/tools/hello.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "tests/hello.test.ts",
+      "source": "files/tests/hello.test.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": "tsconfig.json",
+      "source": "files/tsconfig.json.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "application/json"
+    },
+    {
+      "path": "vitest.config.ts",
+      "source": "files/vitest.config.ts.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/typescript"
+    },
+    {
+      "path": ".gitignore",
+      "source": "files/gitignore.hbs",
+      "ownership": "user-owned",
+      "updateStrategy": "create-once",
+      "required": true,
+      "contentType": "text/plain"
+    },
+    {
+      "path": "mcp-forge.json",
+      "source": "files/mcp-forge.json.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "application/json"
+    },
+    {
       "path": "README.md",
       "source": "files/README.md.hbs",
       "ownership": "shared",
@@ -39,13 +87,25 @@
       "contentType": "text/markdown"
     },
     {
-      "path": "SYSTEM_PROMPT.md",
-      "source": "files/SYSTEM_PROMPT.md.hbs",
-      "ownership": "user-owned",
-      "updateStrategy": "create-once",
-      "required": false,
-      "contentType": "text/markdown"
+      "path": "pnpm-lock.yaml",
+      "source": "files/pnpm-lock.yaml.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/yaml"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "source": "files/pnpm-workspace.yaml.hbs",
+      "ownership": "forge-owned",
+      "updateStrategy": "replace-if-unmodified",
+      "required": true,
+      "contentType": "text/yaml"
     }
   ],
-  "directories": [{ "path": "src", "required": true }]
+  "directories": [
+    { "path": "src", "required": true },
+    { "path": "src/tools", "required": true },
+    { "path": "tests", "required": true }
+  ]
 }

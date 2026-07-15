@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
@@ -46,6 +48,17 @@ function codes(result: { diagnostics: Array<{ code: string }> }): string[] {
   return result.diagnostics.map(({ code }) => code);
 }
 
+function listFiles(root: string, prefix = ""): string[] {
+  return readdirSync(root, { withFileTypes: true })
+    .flatMap((entry) => {
+      const path = prefix === "" ? entry.name : `${prefix}/${entry.name}`;
+      return entry.isDirectory()
+        ? listFiles(join(root, entry.name), path)
+        : [path];
+    })
+    .sort();
+}
+
 describe("template manifest validation", () => {
   it.each(["basic-typescript-server", "knowledge-typescript-server"])(
     "ships a valid %s example manifest",
@@ -60,6 +73,23 @@ describe("template manifest validation", () => {
       expect(validateTemplateManifest(input).success).toBe(true);
     },
   );
+
+  it("declares every shipped basic template asset exactly once", () => {
+    const templateRoot = fileURLToPath(
+      new URL("../templates/basic-typescript-server/", import.meta.url),
+    );
+    const input = JSON.parse(
+      readFileSync(join(templateRoot, "template.json"), "utf8"),
+    ) as unknown;
+    const result = validateTemplateManifest(input);
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.files.map(({ source }) => source).sort()).toEqual(
+        listFiles(join(templateRoot, "files")).map((path) => `files/${path}`),
+      );
+    }
+  });
 
   it("validates and deterministically sorts a basic server manifest", () => {
     const result = validateTemplateManifest(

@@ -23,3 +23,9 @@ an explicit project catalog and the same shared inspection and planning
 contracts. Its approved trust-boundary design is recorded in
 [the Phase 4 architecture proposal](architecture/read-only-forge-mcp-interface.md).
 No MCP apply operations, AI provider, or LM Studio client are implemented.
+
+The first
+[functional local TypeScript MCP template](templates/basic-typescript-server.md)
+generates a standalone stdio server with one bounded `hello` tool. Its runtime
+is offline and side-effect free after dependencies are installed; it is not an
+npm/npx distribution or a general-purpose business server.

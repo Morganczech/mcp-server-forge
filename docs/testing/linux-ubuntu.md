@@ -8,8 +8,9 @@ GitHub clone on Ubuntu Linux. The exact Ubuntu version was not recorded during
 the test, so this report does not infer one.
 
 The CLI was executed locally from the built monorepo. The package is private and
-is not published to npm. The generated TypeScript project remains placeholder
-output rather than a functional MCP SDK server.
+is not published to npm. This report records the earlier four-file placeholder
+template smoke test and predates the Phase 5 functional template; current
+functional coverage is defined in [smoke-tests.md](smoke-tests.md) and CI.
 
 ## Environment
 

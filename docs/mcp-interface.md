@@ -193,12 +193,18 @@ use the network, list tracked generated files, and summarize a fresh preview.
 The model may recommend a next step. It cannot create the salon server, change
 its configuration, edit a file, or approve and apply the preview through MCP.
 
+A generated `basic-typescript-server` project can be added to the explicit
+catalog after generation. The read-only tools then report its healthy state,
+eleven tracked files, denied filesystem/network/shell permissions, and an
+idempotent fresh preview. This does not expose the generated server's `hello`
+tool through Forge; the local generated server is a separate MCP process.
+
 ## Known limitations
 
 - The catalog is edited manually outside MCP and is loaded only at startup.
 - Templates must be explicitly registered inside the corresponding project.
-- The generated TypeScript template remains placeholder output, not a
-  production-ready functional MCP server.
+- The generated basic TypeScript server is functional but intentionally limited
+  to one example `hello` tool; it is not a production-ready business server.
 - There is no authentication layer beyond local process and filesystem access;
   operators must control which client can start the process and which projects
   appear in its catalog.

@@ -60,3 +60,6 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Verify functional MCP template
+        run: pnpm test:template-smoke

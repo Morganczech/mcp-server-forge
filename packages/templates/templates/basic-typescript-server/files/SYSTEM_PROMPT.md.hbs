@@ -1,8 +1,0 @@
-# {{escapeMarkdown project.title}} system prompt
-
-Use {{server.name}} for {{server.description}}.
-Do not invent missing information.
-{{#if capabilities.tools}}Use only tools explicitly declared by the server configuration.{{/if}}
-{{#if capabilities.resources}}Prefer the server's declared resources when answering.{{/if}}
-{{#if capabilities.prompts}}Use declared prompts only for their documented purpose.{{/if}}
-{{#if security.requireConfirmation}}Require confirmation before destructive operations.{{/if}}

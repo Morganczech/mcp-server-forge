@@ -1,0 +1,15 @@
+export const MAX_HELLO_NAME_LENGTH = 80;
+
+export interface HelloResult extends Record<string, unknown> {
+  message: string;
+}
+
+export function createHelloResult(name?: string): HelloResult {
+  const normalizedName = name?.trim();
+  return {
+    message:
+      normalizedName === undefined || normalizedName.length === 0
+        ? "Hello from your local MCP server!"
+        : `Hello, ${normalizedName}!`
+  };
+}

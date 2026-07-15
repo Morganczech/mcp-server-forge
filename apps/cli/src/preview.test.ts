@@ -124,7 +124,7 @@ async function writeState(
     JSON.stringify({
       stateVersion: "1",
       templateId: "basic-typescript-server",
-      templateVersion: "1.0.0",
+      templateVersion: "1.1.0",
       hashAlgorithm: "sha256",
       generatedAt: "2026-01-01T00:00:00.000Z",
       files,
@@ -206,7 +206,7 @@ describe("mcp-forge preview", () => {
     expect(result.stdout).toContain("MCP Server Forge generation preview");
     expect(result.stdout).toContain("ACTION");
     expect(result.stdout).toContain("package.json");
-    expect(result.stdout).toContain("create:         4");
+    expect(result.stdout).toContain("create:         11");
     expect(result.stdout).toContain("Safe to apply: yes");
     expect(JSON.parse(defaultRoot.stdout).projectRoot).toBe(testDirectory);
   });
@@ -227,7 +227,7 @@ describe("mcp-forge preview", () => {
 
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("CREATE package.json TARGET_MISSING");
-    expect(result.stdout).toContain("SUMMARY create=4");
+    expect(result.stdout).toContain("SUMMARY create=11");
   });
 
   it("requires a template and reports invalid usage", async () => {
@@ -380,10 +380,10 @@ describe("mcp-forge preview", () => {
     expect(parsed).toMatchObject({
       success: true,
       safeToApply: true,
-      template: { id: "basic-typescript-server", version: "1.0.0" },
-      summary: { create: 4 },
+      template: { id: "basic-typescript-server", version: "1.1.0" },
+      summary: { create: 11 },
     });
-    expect((parsed.files as unknown[]).length).toBe(4);
+    expect((parsed.files as unknown[]).length).toBe(11);
   });
 
   it("shows only eligible rendered content and can reveal skipped rows", async () => {
@@ -401,17 +401,17 @@ describe("mcp-forge preview", () => {
 
     const project = await renderedBasicProject();
     const rendered = project.renderResult.files.find(
-      ({ path }) => path === "SYSTEM_PROMPT.md",
+      ({ path }) => path === ".gitignore",
     );
-    if (rendered === undefined) throw new Error("prompt render missing");
+    if (rendered === undefined) throw new Error("gitignore render missing");
     await writeProjectFile(rendered.path, "private target content\n");
     const hidden = await capture(previewArgs("--show-content"));
     const shown = await capture(previewArgs("--show-skipped"));
 
     expect(hidden.stdout).not.toContain("private target content");
-    expect(hidden.stdout).not.toContain("--- SYSTEM_PROMPT.md ---");
-    expect(hidden.stdout).not.toContain("skip    SYSTEM_PROMPT.md");
-    expect(shown.stdout).toContain("SYSTEM_PROMPT.md");
+    expect(hidden.stdout).not.toContain("--- .gitignore ---");
+    expect(hidden.stdout).not.toContain("skip    .gitignore");
+    expect(shown.stdout).toContain(".gitignore");
     expect(shown.stdout).toContain("USER_OWNED_TARGET_EXISTS");
   });
 
@@ -444,16 +444,9 @@ describe("mcp-forge preview", () => {
   });
 
   it("supports warnings-as-errors and quiet semantics", async () => {
-    const server = basicConfig.server as Record<string, unknown>;
     basicConfig = {
       ...basicConfig,
-      server: {
-        ...server,
-        capabilities: {
-          ...(server.capabilities as Record<string, unknown>),
-          tools: true,
-        },
-      },
+      tools: [],
     };
     await writeFile(
       join(testDirectory, "mcp-forge.json"),
