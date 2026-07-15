@@ -9,45 +9,90 @@ The repository contains project infrastructure, validation/import contracts,
 template ownership rules, and pure in-memory placeholder rendering. It does not
 yet generate a functional MCP SDK server.
 
-## Requirements
+## Prerequisites
 
 - Node.js 22 or newer
-- pnpm 11
+- pnpm 11.7.0
 
-## Getting started
+The preferred pnpm setup uses Corepack:
 
 ```bash
-pnpm install
+corepack enable
+pnpm --version
+```
+
+The repository's `packageManager` field pins pnpm 11.7.0. If the Node.js
+installation does not provide a usable Corepack setup, install that version with
+npm instead:
+
+```bash
+npm install -g pnpm@11.7.0
+```
+
+For an installation that does not require a system-wide global directory:
+
+```bash
+npm install -g pnpm@11.7.0 --prefix "$HOME/.local"
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+## Quick Start
+
+Run the following commands from the root of a clean clone.
+
+### Install
+
+```bash
+pnpm install --frozen-lockfile
+```
+
+### Build
+
+```bash
+pnpm build
+```
+
+### Test
+
+Run the same verification suite used by the project:
+
+```bash
+pnpm format:check
 pnpm lint
 pnpm typecheck
 pnpm test
 ```
 
-Validate a Forge configuration during development:
+### Validate
+
+Validate the included example configuration:
 
 ```bash
-pnpm --filter @mcp-server-forge/cli dev validate ./mcp-forge.json
+node apps/cli/dist/index.js validate ./packages/generators/fixtures/valid/basic-config.json
 ```
 
-Preview generation without changing a target project:
+### Preview
+
+Create an empty target directory, then inspect a generation plan. Preview is
+read-only and does not write generated files or generation state.
 
 ```bash
-pnpm --filter @mcp-server-forge/cli dev preview \
-  --config ./packages/generators/fixtures/valid/basic-config.json \
-  --root ./target-project \
-  --template ./packages/templates/templates/basic-typescript-server
+node -e "require('node:fs').mkdirSync('./target-project', { recursive: true })"
+node apps/cli/dist/index.js preview --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
-Apply the same safe plan after an interactive confirmation:
+### Generate
+
+Generate always creates a fresh preview before asking for confirmation. It
+writes only from an interactive terminal and only after the answer `y` or `yes`:
 
 ```bash
-pnpm --filter @mcp-server-forge/cli dev generate \
-  --config ./packages/generators/fixtures/valid/basic-config.json \
-  --root ./target-project \
-  --template ./packages/templates/templates/basic-typescript-server
+node apps/cli/dist/index.js generate --config ./packages/generators/fixtures/valid/basic-config.json --root ./target-project --template ./packages/templates/templates/basic-typescript-server
 ```
 
-The reserved installed commands are:
+The generated TypeScript project is currently placeholder output, not yet a
+functional MCP SDK server. The package is also private and is not published to
+npm. The reserved installed command forms are:
 
 ```bash
 mcp-forge validate ./mcp-forge.json
@@ -58,6 +103,10 @@ mcp-forge generate --root ./project --template ./template
 See [docs/cli.md](docs/cli.md), [docs/cli-preview.md](docs/cli-preview.md), and
 [docs/cli-generate.md](docs/cli-generate.md) for command contracts, output, and
 exit codes.
+
+For repeatable end-to-end verification, see the
+[general smoke test procedure](docs/testing/smoke-tests.md) and the recorded
+[Ubuntu smoke test](docs/testing/linux-ubuntu.md).
 
 ## Repository layout
 

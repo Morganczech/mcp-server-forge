@@ -210,7 +210,9 @@ the `summary` object:
 mcp-forge validate ./mcp-forge.json --format json --warnings-as-errors
 ```
 
-No GitHub Actions workflow is included in this phase.
+The read-only GitHub Actions workflow runs the repository verification suite on
+Ubuntu, macOS, and Windows with Node.js 22. It does not publish packages or
+create releases.
 
 ## General help
 

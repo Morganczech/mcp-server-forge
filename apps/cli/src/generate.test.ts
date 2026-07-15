@@ -2,6 +2,7 @@ import {
   mkdir,
   mkdtemp,
   readFile,
+  readdir,
   rm,
   stat,
   writeFile,
@@ -66,6 +67,20 @@ async function capture(
   return { exitCode, stdout, stderr };
 }
 
+async function listFiles(root: string, prefix = ""): Promise<string[]> {
+  const files: string[] = [];
+  const entries = await readdir(root, { withFileTypes: true });
+  for (const entry of entries) {
+    const path = prefix.length === 0 ? entry.name : `${prefix}/${entry.name}`;
+    if (entry.isDirectory()) {
+      files.push(...(await listFiles(join(root, entry.name), path)));
+    } else {
+      files.push(path);
+    }
+  }
+  return files.sort();
+}
+
 describe("mcp-forge generate", () => {
   it("applies a fresh safe preview after explicit confirmation", async () => {
     const result = await capture(true);
@@ -87,6 +102,51 @@ describe("mcp-forge generate", () => {
       generatedAt: "2026-07-15T08:00:00.000Z",
       files: expect.any(Array),
     });
+  });
+
+  it("is idempotent and blocks a manually modified forge-owned file", async () => {
+    const first = await capture(true);
+    expect(first.exitCode).toBe(0);
+    expect(await listFiles(projectRoot)).toEqual([
+      ".mcp-forge/generated-state.json",
+      "README.md",
+      "SYSTEM_PROMPT.md",
+      "package.json",
+      "src/index.ts",
+    ]);
+
+    const statePath = join(projectRoot, ".mcp-forge/generated-state.json");
+    const stateAfterFirstRun = await readFile(statePath, "utf8");
+    const indexAfterFirstRun = await readFile(
+      join(projectRoot, "src/index.ts"),
+      "utf8",
+    );
+
+    const second = await capture(true);
+    expect(second.exitCode).toBe(0);
+    expect(second.stdout).toContain("skip:           4");
+    expect(second.stdout).toContain(
+      "No file changes to apply; generation state was not changed.",
+    );
+    expect(await readFile(statePath, "utf8")).toBe(stateAfterFirstRun);
+    expect(await readFile(join(projectRoot, "src/index.ts"), "utf8")).toBe(
+      indexAfterFirstRun,
+    );
+
+    await writeFile(
+      join(projectRoot, "src/index.ts"),
+      `${indexAfterFirstRun}\n// manual smoke-test change\n`,
+    );
+    const conflict = await capture(true);
+
+    expect(conflict.exitCode).toBe(5);
+    expect(conflict.stdout).toContain("TARGET_MODIFIED_SINCE_GENERATION");
+    expect(conflict.stdout).toContain("PLAN_FILE_CONFLICT");
+    expect(conflict.stdout).toContain("PLAN_TARGET_MODIFIED");
+    expect(await readFile(statePath, "utf8")).toBe(stateAfterFirstRun);
+    expect(await readFile(join(projectRoot, "src/index.ts"), "utf8")).toContain(
+      "// manual smoke-test change",
+    );
   });
 
   it("does not write when confirmation is refused or no TTY exists", async () => {
