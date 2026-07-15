@@ -136,6 +136,16 @@ async function run(command, args, cwd) {
   }
 }
 
+async function runPnpm(args, cwd) {
+  const pnpmCli = process.env.npm_execpath;
+  if (pnpmCli === undefined || pnpmCli === "") {
+    throw new Error(
+      "The smoke test must be started through pnpm so npm_execpath is available.",
+    );
+  }
+  return run(process.execPath, [pnpmCli, ...args], cwd);
+}
+
 async function prepareGeneration(projectRoot, configValue) {
   const validation = validateForgeProject(configValue);
   if (!validation.success) throw new Error("Smoke configuration is invalid.");
@@ -470,11 +480,10 @@ try {
     throw new Error("Second generation preview is not fully idempotent.");
   }
 
-  const pnpm = process.platform === "win32" ? "pnpm.cmd" : "pnpm";
-  await run(pnpm, ["install", "--frozen-lockfile"], projectRoot);
-  await run(pnpm, ["typecheck"], projectRoot);
-  await run(pnpm, ["test"], projectRoot);
-  await run(pnpm, ["build"], projectRoot);
+  await runPnpm(["install", "--frozen-lockfile"], projectRoot);
+  await runPnpm(["typecheck"], projectRoot);
+  await runPnpm(["test"], projectRoot);
+  await runPnpm(["build"], projectRoot);
   const inspection = await inspectGeneratedProject(projectRoot);
   const beforeRuntime = await snapshotProject(projectRoot);
   const mcp = await smokeMcpServer(projectRoot);
