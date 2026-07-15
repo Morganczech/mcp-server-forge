@@ -11,4 +11,6 @@ Current references include the
 [preview CLI](cli-preview.md). The mutating workflow is split between the pure
 [Apply Contract](apply-contract.md), bounded
 [filesystem execution](filesystem-generation.md), and interactive
-[generate CLI](cli-generate.md).
+[generate CLI](cli-generate.md). Repeatable verification is covered by the
+[smoke-test procedure](testing/smoke-tests.md), and the manual source-release
+process is documented in the [release checklist](releasing.md).

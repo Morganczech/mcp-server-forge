@@ -1,6 +1,6 @@
 {
   "name": "mcp-server-forge",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "description": "CLI and MCP server toolkit for designing, generating, validating, and documenting standard MCP servers.",
   "license": "MIT",

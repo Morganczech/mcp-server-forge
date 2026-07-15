@@ -7,18 +7,53 @@ pre-release identifiers while its public contracts are still evolving.
 
 ## Unreleased
 
+## [0.1.0-alpha.2] - 2026-07-15
+
+Second public alpha release of MCP Server Forge.
+
 ### Added
 
-- pure versioned Apply Contract in `@mcp-server-forge/core`;
-- bounded filesystem execution with stale-target checks, atomic-per-file writes,
-  executable-mode handling, and generation state persisted last;
-- interactive `mcp-forge generate` workflow with no non-interactive bypass.
+- interactive `mcp-forge generate` workflow with explicit TTY confirmation;
+- pure versioned Apply Contract separated from bounded filesystem execution;
+- versioned generation state recording ownership, update policy, and generated
+  hashes for successfully applied managed files;
+- conflict, manual-review, orphan, stale-target, symlink, and path-boundary
+  protections that block unsafe generation plans before writes begin;
+- atomic per-file writes with generation state persisted only after all planned
+  file operations succeed;
+- idempotent repeated generation that skips unchanged managed files.
 
-### Security
+### Fixed
 
-- unsafe plans, unconfirmed applications, symlinked paths, changed targets,
-  changed generation state, and standalone empty directories are rejected before
-  writes begin.
+- repository text files are normalized to LF so formatting checks behave
+  consistently on Windows checkouts.
+
+### Testing
+
+- end-to-end CLI smoke coverage verifies initial generation, the generated file
+  set and state, an idempotent second run, and rejection of a manually modified
+  forge-owned file;
+- read-only CI runs frozen-lockfile installation, formatting, lint, typecheck,
+  tests, and build on Ubuntu, macOS, and Windows with Node.js 22 and pnpm
+  11.7.0.
+
+### Documentation
+
+- onboarding documents Node.js and pnpm prerequisites, Corepack and npm setup,
+  frozen installation, build, test, validate, preview, and generate workflows;
+- repeatable cross-platform smoke-test instructions and the completed Ubuntu
+  smoke report are recorded under `docs/testing/`;
+- Apply Contract, filesystem execution, interactive generation boundaries, and
+  the source-release checklist are documented separately.
+
+### Known limitations
+
+- generated TypeScript projects remain placeholders without a functional MCP SDK
+  server;
+- marker merge, generated-file deletion, registry and dependency resolution, and
+  template migrations are not implemented;
+- the MCP server application remains a future interface;
+- all packages remain private and are not prepared for npm publication.
 
 ## [0.1.0-alpha.1] - 2026-07-14
 
