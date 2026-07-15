@@ -28,5 +28,9 @@
 - [x] Define pure Project Inspection, permission, and Project Change Plan
       contracts.
 - [x] Add structured `inspect` and an experimental read-only terminal client.
-- [ ] Implement additional CLI commands after their underlying workflows exist.
-- [ ] Implement the forge MCP server.
+- [ ] Implement the approved Phase 4 read-only project catalog and trust
+      boundary.
+- [ ] Implement the minimal read-only Forge MCP tool registry over shared engine
+      contracts.
+- [ ] Add MCP contract, redaction, pagination, size-limit, path-boundary, and
+      no-write tests.

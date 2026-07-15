@@ -17,3 +17,8 @@ process is documented in the [release checklist](releasing.md). The pure Project
 Inspection and Project Change Plan contracts and the experimental read-only
 terminal client are described in the
 [engine and TUI architecture](architecture/forge-engine-and-tui.md).
+
+The proposed next phase is a strictly
+[read-only Forge MCP interface and trust boundary](architecture/read-only-forge-mcp-interface.md).
+It is a design only: no MCP tools, apply operations, AI provider, or LM Studio
+client are implemented yet.
